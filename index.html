@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>どこ伝 - 納品書・見積書をどこでも作成</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 5mm;
+      }
+      body * { visibility: hidden; }
+      #printable-area, #printable-area * { visibility: visible; }
+      #printable-area { 
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        margin: 0;
+        padding: 0;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 p-3 sm:p-6 pb-20">
+  
+  <div class="max-w-3xl mx-auto space-y-4 no-print">
+    <!-- ヘッダー -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-emerald-500 text-white font-black text-lg px-3 py-2 rounded-xl shadow">
+          どこ伝
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">どこ伝</h1>
+          <p class="text-[11px] text-slate-500">写メ注文から納品書・見積書をすぐ作成</p>
+        </div>
+      </div>
+
+      <!-- 納品書 / 見積書 切り替えボタン -->
+      <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 w-full sm:w-auto">
+        <button onclick="switchSlipMode('delivery')" id="modeDeliveryBtn" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm">納品書</button>
+        <button onclick="switchSlipMode('estimate')" id="modeEstimateBtn" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">見積書</button>
+      </div>
+    </div>
+
+    <!-- 1. Gemini API 設定カード -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-amber-500 text-base">🔑</span>
+        <h2 class="text-xs font-bold text-slate-800">Gemini API 設定</h2>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-600 mb-1">APIキー</label>
+        <div class="flex gap-2">
+          <input type="password" id="apiKey" placeholder="AI StudioのAPIキーを入力" class="flex-1 p-2.5 border rounded-xl text-xs bg-slate-50 focus:bg-white transition">
+          <button onclick="toggleApiKeyVisibility()" type="button" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border">表示</button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input type="checkbox" id="saveKey" checked class="w-4 h-4 text-blue-600 rounded">
+        <label for="saveKey" class="text-xs text-slate-700 cursor-pointer">この端末にAPIキーを保存する</label>
+      </div>
+
+      <p class="text-[11px] text-slate-500 leading-relaxed">
+        <a href="https://aistudio.google.com/" target="_blank" class="text-blue-600 underline font-semibold">Google AI Studio</a> で無料のAPIキーを発行できます（クレジットカード登録不要）。キーはこの端末のブラウザ内にのみ保存されます。
+      </p>
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-600 mb-1">モデル</label>
+        <select id="geminiModel" class="w-full p-2.5 border rounded-xl text-xs bg-slate-50">
+          <option value="gemini-2.5-flash">gemini-2.5-flash (高速・最新)</option>
+          <option value="gemini-1.5-flash">gemini-1.5-flash (標準)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 2. 写メ・ファイルからの読み取りカード -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-blue-600 text-base">📷</span>
+        <h2 class="text-xs font-bold text-slate-800">写メ・データファイルから読み取り</h2>
+      </div>
+      <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="handleImageSelect(event)">
+      <button onclick="document.getElementById('imageInput').click()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+        📁 アルバム・ファイルから選ぶ / 撮影する
+      </button>
+      <div id="previewContainer" class="mt-3 hidden space-y-2">
+        <img id="imagePreview" class="w-full h-44 object-contain bg-slate-900 rounded-xl border">
+        <button onclick="analyzeImage()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition">✨ AIで文字を読み取る</button>
+      </div>
+    </div>
+
+    <!-- 3. LINE注文を貼り付けカード -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-emerald-600 text-base">💬</span>
+        <h2 class="text-xs font-bold text-slate-800">LINE注文を貼り付け</h2>
+      </div>
+      <textarea id="lineInput" rows="3" placeholder="注文テキストをそのまま貼り付け (例: トマト 3箱)" class="w-full p-2.5 border rounded-xl text-xs bg-slate-50 focus:bg-white transition"></textarea>
+      
+      <div class="flex gap-2">
+        <button onclick="convertLineInput()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition">注文を明細に変換</button>
+        <button onclick="loadExample()" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">例文を入れる</button>
+      </div>
+      <p class="text-[10px] text-slate-500">全角数字・改行・スペース区切りに対応。数量のない商品は空欄にし、勝手に数量を補いません。</p>
+    </div>
+
+    <!-- 4. 名前付き下書き管理カード -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-amber-600 text-base">📝</span>
+        <h2 class="text-xs font-bold text-slate-800">名前付き下書き管理</h2>
+      </div>
+      <div class="flex gap-2">
+        <input type="text" id="draftName" placeholder="下書き名を入力 (例: 〇〇商店 午前分)" class="flex-1 p-2 border rounded-xl text-xs bg-slate-50">
+        <button onclick="saveDraft()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow">💾 下書き保存</button>
+      </div>
+      <div class="flex gap-2 items-center">
+        <select id="draftSelect" class="flex-1 p-2 border rounded-xl text-xs bg-slate-50">
+          <option value="">-- 保存した下書きを選択 --</option>
+        </select>
+        <button onclick="loadDraft()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs px-3 py-2 rounded-xl">📂 呼出</button>
+        <button onclick="deleteDraft()" class="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-3 py-2 rounded-xl">🗑️ 削除</button>
+      </div>
+    </div>
+
+    <!-- 5. 伝票情報カード -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-indigo-600 text-base">📋</span>
+        <h2 class="text-xs font-bold text-slate-800">伝票情報設定</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">発行元（納品者名）</label>
+          <input type="text" id="issuer" placeholder="発行元名を入力" class="w-full p-2.5 border rounded-xl bg-slate-50" oninput="updatePrint()">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">取引先（納品先名）</label>
+          <input type="text" id="client" placeholder="納品先名を入力" class="w-full p-2.5 border rounded-xl bg-slate-50" oninput="updatePrint()">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">発行元 住所</label>
+          <input type="text" id="issuerAddress" placeholder="住所を入力 (例: 東京都...)" class="w-full p-2.5 border rounded-xl bg-slate-50" oninput="updatePrint()">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">発行元 電話番号</label>
+          <input type="tel" id="issuerPhone" placeholder="電話番号を入力 (例: 090-...)" class="w-full p-2.5 border rounded-xl bg-slate-50" oninput="updatePrint()">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">伝票日付</label>
+          <input type="date" id="slipDate" class="w-full p-2.5 border rounded-xl bg-slate-50" oninput="updatePrint()">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">支払方法</label>
+          <select id="paymentMethod" class="w-full p-2.5 border rounded-xl bg-slate-50" onchange="updatePrint()">
+            <option value="現金">現金</option>
+            <option value="掛売り" selected>掛売り</option>
+            <option value="振込">振込</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">消費税率</label>
+          <select id="taxRate" class="w-full p-2.5 border rounded-xl bg-slate-50" onchange="calculateTotals()">
+            <option value="0.08">8% (軽減税率)</option>
+            <option value="0.10" selected>10%</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">税の計算</label>
+          <select id="taxCalcType" class="w-full p-2.5 border rounded-xl bg-slate-50" onchange="calculateTotals()">
+            <option value="inclusive" selected>入力単価は税込</option>
+            <option value="exclusive">入力単価は税別</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. 明細を確認・修正カード -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xs font-bold text-slate-800 flex items-center gap-2">
+          <span>📝</span><span>明細を確認・修正</span>
+        </h2>
+        <button onclick="addRow()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow">+ 商品を追加</button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left min-w-[620px]">
+          <thead class="bg-slate-100 text-slate-700">
+            <tr>
+              <th class="p-2 rounded-l-lg">品名</th>
+              <th class="p-2 w-16 text-center">数量</th>
+              <th class="p-2 w-52 text-center">単位 (スタンプ付)</th>
+              <th class="p-2 w-20 text-center">単価 (円)</th>
+              <th class="p-2 w-20 text-right">金額</th>
+              <th class="p-2 w-12 text-center">赤伝</th>
+              <th class="p-2 w-8 rounded-r-lg"></th>
+            </tr>
+          </thead>
+          <tbody id="itemRows" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+
+      <!-- 合計表示（納品書モードの時のみ画面下に表示） -->
+      <div id="screenTotalArea" class="border-t pt-3 text-right space-y-1 text-xs bg-slate-50 p-4 rounded-xl border">
+        <div>明細小計: ¥<span id="subtotal">0</span></div>
+        <div>消費税 (参考): ¥<span id="tax">0</span></div>
+        <div class="text-base font-black text-blue-600">合計: ¥<span id="grandTotal">0</span></div>
+      </div>
+
+      <!-- アクションボタン群 -->
+      <div class="flex flex-col sm:flex-row gap-2 pt-2">
+        <button onclick="openPreviewModal()" id="previewBtnLabel" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+          📱 納品書拡大表示 (LINE・スクショ用)
+        </button>
+        <button onclick="window.print()" id="printBtnLabel" class="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+          🖨️ A4二分割で印刷
+        </button>
+        <button onclick="clearAllRows()" class="px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl transition">
+          🗑️ 明細をクリア
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- A4横向き印刷プレビューエリア -->
+  <div id="printable-area" class="max-w-5xl mx-auto bg-white p-6 border border-slate-300 my-8 shadow-sm rounded-xl">
+    <div class="grid grid-cols-2 gap-6">
+      <!-- 伝票 (左側) -->
+      <div class="border-r pr-6 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-start mb-3 border-b-2 border-slate-800 pb-2">
+            <div>
+              <h2 id="printTitle1" class="text-base font-black tracking-widest text-slate-900">納 品 書</h2>
+            </div>
+            <div class="text-right text-[10px] text-slate-600">
+              <p>日付: <span id="pDate"></span></p>
+              <p class="font-bold">支払: <span id="pPayment">掛売り</span></p>
+            </div>
+          </div>
+          <div class="flex justify-between items-end mb-3">
+            <p class="text-xs font-bold text-slate-900 underline text-lg"><span id="pClient"></span> 様</p>
+            <div class="text-right text-[10px] text-slate-700">
+              <p class="font-bold text-xs"><span id="pIssuer"></span></p>
+              <p id="pIssuerAddress"></p>
+              <p id="pIssuerPhone"></p>
+            </div>
+          </div>
+
+          <table class="w-full text-[11px] border-collapse border border-slate-300 mb-3">
+            <thead>
+              <tr class="bg-slate-100 text-slate-800">
+                <th class="border border-slate-300 p-1 text-left">品名</th>
+                <th class="border border-slate-300 p-1 text-right w-12">数量</th>
+                <th class="border border-slate-300 p-1 text-center w-10">単位</th>
+                <th class="border border-slate-300 p-1 text-right w-16">単価</th>
+                <th class="border border-slate-300 p-1 text-right w-16">金額</th>
+              </tr>
+            </thead>
+            <tbody id="printRows1"></tbody>
+          </table>
+        </div>
+
+        <!-- 印刷用 合計ボックス（見積書モードでは非表示） -->
+        <div id="printTotal1" class="flex justify-end text-xs pt-2">
+          <div class="w-44 space-y-1 border p-2 bg-slate-50 rounded">
+            <div class="flex justify-between text-[10px]"><span>小計:</span><span>¥<span id="pSubtotal1">0</span></span></div>
+            <div class="flex justify-between text-[10px]"><span>消費税:</span><span>¥<span id="pTax1">0</span></span></div>
+            <div class="flex justify-between font-bold border-t pt-1 text-xs"><span>合計:</span><span>¥<span id="pGrandTotal1">0</span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 控 (右側) -->
+      <div class="pl-2 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-start mb-3 border-b-2 border-slate-800 pb-2">
+            <div>
+              <h2 id="printTitle2" class="text-base font-black tracking-widest text-slate-900">納 品 控</h2>
+            </div>
+            <div class="text-right text-[10px] text-slate-600">
+              <p>日付: <span id="pDate2"></span></p>
+              <p class="font-bold">支払: <span id="pPayment2">掛売り</span></p>
+            </div>
+          </div>
+          <div class="flex justify-between items-end mb-3">
+            <p class="text-xs font-bold text-slate-900 underline text-lg"><span id="pClient2"></span> 様</p>
+            <div class="text-right text-[10px] text-slate-700">
+              <p class="font-bold text-xs"><span id="pIssuer2"></span></p>
+              <p id="pIssuerAddress2"></p>
+              <p id="pIssuerPhone2"></p>
+            </div>
+          </div>
+
+          <table class="w-full text-[11px] border-collapse border border-slate-300 mb-3">
+            <thead>
+              <tr class="bg-slate-100 text-slate-800">
+                <th class="border border-slate-300 p-1 text-left">品名</th>
+                <th class="border border-slate-300 p-1 text-right w-12">数量</th>
+                <th class="border border-slate-300 p-1 text-center w-10">単位</th>
+                <th class="border border-slate-300 p-1 text-right w-16">単価</th>
+                <th class="border border-slate-300 p-1 text-right w-16">金額</th>
+              </tr>
+            </thead>
+            <tbody id="printRows2"></tbody>
+          </table>
+        </div>
+
+        <!-- 印刷用 控の合計ボックス（見積書モードでは非表示） -->
+        <div id="printTotal2" class="flex justify-end text-xs pt-2">
+          <div class="w-44 space-y-1 border p-2 bg-slate-50 rounded">
+            <div class="flex justify-between text-[10px]"><span>小計:</span><span>¥<span id="pSubtotal2">0</span></span></div>
+            <div class="flex justify-between text-[10px]"><span>消費税:</span><span>¥<span id="pTax2">0</span></span></div>
+            <div class="flex justify-between font-bold border-t pt-1 text-xs"><span>合計:</span><span>¥<span id="pGrandTotal2">0</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- スクショ用 伝票拡大モーダル -->
+  <div id="previewModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 no-print">
+    <div class="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+      <div class="p-3 bg-slate-900 text-white flex justify-between items-center">
+        <span id="modalHeaderTitle" class="text-xs font-bold">📸 LINE・スクショ用 納品書拡大表示</span>
+        <button onclick="closePreviewModal()" class="text-slate-400 hover:text-white font-bold px-2 py-1">✕ 閉じる</button>
+      </div>
+      
+      <div class="p-5 overflow-y-auto bg-slate-50 flex-1">
+        <div id="modalPrintArea" class="bg-white p-5 border rounded-xl shadow-sm text-slate-900">
+          <div class="flex justify-between items-start mb-3 border-b-2 border-slate-900 pb-2">
+            <div>
+              <h2 id="modalTitle" class="text-lg font-black tracking-widest text-slate-900">納 品 書</h2>
+            </div>
+            <div class="text-right text-xs text-slate-600">
+              <p>日付: <span id="mDate"></span></p>
+              <p class="font-bold">支払: <span id="mPayment"></span></p>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-end mb-4">
+            <p class="text-base font-bold text-slate-900 underline"><span id="mClient"></span> 様</p>
+            <div class="text-right text-xs text-slate-700">
+              <p class="font-bold text-sm"><span id="mIssuer"></span></p>
+              <p id="mIssuerAddress"></p>
+              <p id="mIssuerPhone"></p>
+            </div>
+          </div>
+
+          <table class="w-full text-xs border-collapse border border-slate-300 mb-4">
+            <thead>
+              <tr class="bg-slate-100 text-slate-800">
+                <th class="border border-slate-300 p-1.5 text-left">品名</th>
+                <th class="border border-slate-300 p-1.5 text-right w-12">数量</th>
+                <th class="border border-slate-300 p-1.5 text-center w-12">単位</th>
+                <th class="border border-slate-300 p-1.5 text-right w-16">単価</th>
+                <th class="border border-slate-300 p-1.5 text-right w-20">金額</th>
+              </tr>
+            </thead>
+            <tbody id="mPrintRows"></tbody>
+          </table>
+
+          <!-- モーダル用 合計ボックス（見積書モードでは非表示） -->
+          <div id="modalTotalBox" class="flex justify-end text-xs">
+            <div class="w-48 space-y-1 border p-2 bg-slate-50 rounded-lg">
+              <div class="flex justify-between"><span>小計:</span><span>¥<span id="mSubtotal">0</span></span></div>
+              <div class="flex justify-between"><span>消費税:</span><span>¥<span id="mTax">0</span></span></div>
+              <div class="flex justify-between font-bold border-t pt-1 text-sm text-blue-600"><span>合計:</span><span>¥<span id="mGrandTotal">0</span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-white border-t text-center">
+        <p class="text-[11px] text-slate-500 mb-2">画面をスクリーンショット撮影してLINE等で送信してください。</p>
+        <button onclick="closePreviewModal()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedBase64 = '';
+    let currentSlipMode = 'delivery'; // 'delivery' or 'estimate'
+    
+    // 今日の日付をセット
+    document.getElementById('slipDate').valueAsDate = new Date();
+
+    // APIキーのローカルストレージ保存処理
+    const savedKey = localStorage.getItem('gemini_api_key');
+    if (savedKey) {
+      document.getElementById('apiKey').value = savedKey;
+    }
+    document.getElementById('apiKey').addEventListener('input', (e) => {
+      if (document.getElementById('saveKey').checked) {
+        localStorage.setItem('gemini_api_key', e.target.value);
+      }
+    });
+
+    function toggleApiKeyVisibility() {
+      const keyInput = document.getElementById('apiKey');
+      keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
+    }
+
+    // 伝票モードの切り替え (納品書 / 見積書)
+    function switchSlipMode(mode) {
+      currentSlipMode = mode;
+      const btnDel = document.getElementById('modeDeliveryBtn');
+      const btnEst = document.getElementById('modeEstimateBtn');
+      
+      const screenTotalArea = document.getElementById('screenTotalArea');
+      const printTotal1 = document.getElementById('printTotal1');
+      const printTotal2 = document.getElementById('printTotal2');
+      const modalTotalBox = document.getElementById('modalTotalBox');
+      
+      const printTitle1 = document.getElementById('printTitle1');
+      const printTitle2 = document.getElementById('printTitle2');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalHeaderTitle = document.getElementById('modalHeaderTitle');
+      const previewBtnLabel = document.getElementById('previewBtnLabel');
+      const printBtnLabel = document.getElementById('printBtnLabel');
+
+      if (mode === 'delivery') {
+        btnDel.className = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm";
+        btnEst.className = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900";
+        
+        screenTotalArea.classList.remove('hidden');
+        printTotal1.classList.remove('hidden');
+        printTotal2.classList.remove('hidden');
+        modalTotalBox.classList.remove('hidden');
+
+        printTitle1.innerText = "納 品 書";
+        printTitle2.innerText = "納 品 控";
+        modalTitle.innerText = "納 品 書";
+        modalHeaderTitle.innerText = "📸 LINE・スクショ用 納品書拡大表示";
+        previewBtnLabel.innerHTML = "📱 納品書拡大表示 (LINE・スクショ用)";
+        printBtnLabel.innerHTML = "🖨️ A4二分割で印刷";
+      } else {
+        btnEst.className = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm";
+        btnDel.className = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900";
+        
+        screenTotalArea.classList.add('hidden');
+        printTotal1.classList.add('hidden');
+        printTotal2.classList.add('hidden');
+        modalTotalBox.classList.add('hidden');
+
+        printTitle1.innerText = "見 積 書";
+        printTitle2.innerText = "見 積 控";
+        modalTitle.innerText = "見 積 書";
+        modalHeaderTitle.innerText = "📸 LINE・スクショ用 見積書拡大表示";
+        previewBtnLabel.innerHTML = "📱 見積書拡大表示 (LINE・スクショ用)";
+        printBtnLabel.innerHTML = "🖨️ A4二分割で見積書を印刷";
+      }
+      calculateTotals();
+    }
+
+    // 単位スタンプを挿入する関数
+    function setUnit(btn, unitText) {
+      const tr = btn.closest('tr');
+      const unitInput = tr.querySelector('.item-unit');
+      unitInput.value = unitText;
+      calculateTotals();
+    }
+
+    // 赤伝切り替え
+    function toggleRowRed(btn) {
+      const tr = btn.closest('tr');
+      const qtyInput = tr.querySelector('.item-qty');
+      let q = parseFloat(qtyInput.value) || 0;
+      qtyInput.value = -q;
+      if (qtyInput.value < 0) {
+        btn.classList.replace('bg-slate-100', 'bg-red-600');
+        btn.classList.replace('text-slate-600', 'text-white');
+      } else {
+        btn.classList.replace('bg-red-600', 'bg-slate-100');
+        btn.classList.replace('text-white', 'text-slate-600');
+      }
+      calculateTotals();
+    }
+
+    // LINE注文テキスト変換例文
+    function loadExample() {
+      document.getElementById('lineInput').value = "トマト 3箱\nキャベツ 5玉\nきゅうり 10本";
+      convertLineInput();
+    }
+
+    // LINEテキスト変換
+    function convertLineInput() {
+      const text = document.getElementById('lineInput').value.trim();
+      document.getElementById('itemRows').innerHTML = '';
+      const lines = text.split(/\r?\n/);
+
+      lines.forEach(lineStr => {
+        lineStr = lineStr.trim();
+        if (!lineStr) return;
+
+        let name = lineStr.replace(/^[・\-\*]\s*/, '').trim();
+        let qty = '';
+        let unit = '';
+        let price = '';
+
+        const match = name.match(/^(.+?)\s+([\d\.]+)\s*(c\/s|ケース|玉|個|パック|本|袋|箱|kg|g|束)?$/i);
+        if (match) {
+          name = match[1].trim();
+          qty = match[2];
+          if (match[3]) unit = match[3];
+        } else {
+          const qtyOnly = name.match(/([\d\.]+)\s*(c\/s|ケース|玉|個|パック|本|袋|箱|kg|g|束)?$/i);
+          if (qtyOnly) {
+            qty = qtyOnly[1];
+            if (qtyOnly[2]) unit = qtyOnly[2];
+            name = name.replace(qtyOnly[0], '').trim();
+          }
+        }
+        if (!name) name = lineStr;
+        addRow(name, qty, unit, price);
+      });
+      calculateTotals();
+    }
+
+    // 画像選択処理
+    function handleImageSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        selectedBase64 = evt.target.result.split(',')[1];
+        document.getElementById('imagePreview').src = evt.target.result;
+        document.getElementById('previewContainer').classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Gemini APIによる画像解析
+    async function analyzeImage() {
+      const apiKey = document.getElementById('apiKey').value;
+      const model = document.getElementById('geminiModel').value;
+      if (!apiKey) {
+        alert('Gemini APIキーを入力してください。');
+        return;
+      }
+      if (document.getElementById('saveKey').checked) {
+        localStorage.setItem('gemini_api_key', apiKey);
+      }
+
+      alert('AIが画像を解析中です...');
+
+      const prompt = `この画像（手書き注文書・伝票）から品名、数量、単位、単価を抽出し、以下のJSON配列フォーマットのみで返してください。余計な解説文は含めないでください。
+[
+  {"name": "品名", "quantity": 数量(数値), "unit": "単位", "price": 単価(数値)}
+]`;
+
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: prompt },
+                { inline_data: { mime_type: "image/jpeg", data: selectedBase64 } }
+              ]
+            }]
+          })
+        });
+        const data = await res.json();
+        const text = data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
+        const items = JSON.parse(text);
+
+        document.getElementById('itemRows').innerHTML = '';
+        items.forEach(item => {
+          addRow(item.name, item.quantity, item.unit || '', item.price);
+        });
+        calculateTotals();
+      } catch (err) {
+        alert('読み取りに失敗しました。APIキーまたは画像を確認してください。');
+        console.error(err);
+      }
+    }
+
+    // 明細行追加 (大きめサイズにした単位スタンプボタン含む)
+    function addRow(name = '', qty = '', unit = '', price = '') {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="p-1.5">
+          <input type="text" value="${name}" placeholder="品名を入力" class="item-name w-full border rounded-xl p-2 bg-slate-50 focus:bg-white text-xs" oninput="calculateTotals()">
+        </td>
+        <td class="p-1.5">
+          <input type="number" step="0.1" value="${qty}" placeholder="0" class="item-qty w-full border rounded-xl p-2 text-center bg-slate-50 focus:bg-white text-xs" oninput="calculateTotals()">
+        </td>
+        <td class="p-1.5">
+          <input type="text" value="${unit}" placeholder="単位" class="item-unit w-full border rounded-xl p-2 text-center bg-slate-50 focus:bg-white text-xs mb-1.5" oninput="calculateTotals()">
+          <div class="flex flex-wrap gap-1 justify-center">
+            <button type="button" onclick="setUnit(this, '束')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">束</button>
+            <button type="button" onclick="setUnit(this, 'kg')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">kg</button>
+            <button type="button" onclick="setUnit(this, '箱')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">箱</button>
+            <button type="button" onclick="setUnit(this, '玉')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">玉</button>
+            <button type="button" onclick="setUnit(this, '個')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">個</button>
+            <button type="button" onclick="setUnit(this, 'c/s')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">c/s</button>
+            <button type="button" onclick="setUnit(this, '袋')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">袋</button>
+            <button type="button" onclick="setUnit(this, 'パック')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">パック</button>
+            <button type="button" onclick="setUnit(this, '本')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">本</button>
+          </div>
+        </td>
+        <td class="p-1.5">
+          <input type="number" value="${price}" placeholder="0" class="item-price w-full border rounded-xl p-2 text-right bg-slate-50 focus:bg-white text-xs" oninput="calculateTotals()">
+        </td>
+        <td class="p-1.5 text-right font-medium pr-1">¥<span class="item-total">0</span></td>
+        <td class="p-1.5 text-center">
+          <button onclick="toggleRowRed(this)" class="px-1.5 py-1 bg-slate-100 text-slate-600 font-bold text-[10px] rounded-lg hover:opacity-80">赤伝</button>
+        </td>
+        <td class="p-1.5 text-center">
+          <button onclick="this.closest('tr').remove(); calculateTotals();" class="text-red-500 font-bold text-base px-1">×</button>
+        </td>
+      `;
+      document.getElementById('itemRows').appendChild(tr);
+      calculateTotals();
+    }
+
+    // 合計計算
+    function calculateTotals() {
+      const names = document.querySelectorAll('.item-name');
+      const qtys = document.querySelectorAll('.item-qty');
+      const units = document.querySelectorAll('.item-unit');
+      const prices = document.querySelectorAll('.item-price');
+      const totals = document.querySelectorAll('.item-total');
+      
+      const taxRate = parseFloat(document.getElementById('taxRate').value);
+      const taxCalcType = document.getElementById('taxCalcType').value;
+
+      let subtotal = 0;
+      let printRowsHtml = '';
+
+      names.forEach((n, i) => {
+        const q = parseFloat(qtys[i].value) || 0;
+        const p = parseFloat(prices[i].value) || 0;
+        const lineTotal = Math.round(q * p);
+        totals[i].innerText = lineTotal.toLocaleString();
+        subtotal += lineTotal;
+
+        if (n.value) {
+          const rowColor = lineTotal < 0 ? 'text-red-600 font-bold' : '';
+          printRowsHtml += `
+            <tr class="${rowColor}">
+              <td class="border border-slate-300 p-1">${n.value} ${lineTotal < 0 ? '(赤伝)' : ''}</td>
+              <td class="border border-slate-300 p-1 text-right">${q}</td>
+              <td class="border border-slate-300 p-1 text-center">${units[i].value}</td>
+              <td class="border border-slate-300 p-1 text-right">¥${p.toLocaleString()}</td>
+              <td class="border border-slate-300 p-1 text-right">¥${lineTotal.toLocaleString()}</td>
+            </tr>
+          `;
+        }
+      });
+
+      let tax = 0;
+      let grandTotal = 0;
+
+      if (taxCalcType === 'inclusive') {
+        tax = Math.round(subtotal - (subtotal / (1 + taxRate)));
+        grandTotal = subtotal;
+        subtotal = grandTotal - tax;
+      } else {
+        tax = Math.round(subtotal * taxRate);
+        grandTotal = subtotal + tax;
+      }
+
+      document.getElementById('subtotal').innerText = subtotal.toLocaleString();
+      document.getElementById('tax').innerText = tax.toLocaleString();
+      document.getElementById('grandTotal').innerText = grandTotal.toLocaleString();
+
+      document.getElementById('printRows1').innerHTML = printRowsHtml;
+      document.getElementById('printRows2').innerHTML = printRowsHtml;
+      document.getElementById('mPrintRows').innerHTML = printRowsHtml;
+
+      document.getElementById('pSubtotal1').innerText = subtotal.toLocaleString();
+      document.getElementById('pSubtotal2').innerText = subtotal.toLocaleString();
+      document.getElementById('mSubtotal').innerText = subtotal.toLocaleString();
+
+      document.getElementById('pTax1').innerText = tax.toLocaleString();
+      document.getElementById('pTax2').innerText = tax.toLocaleString();
+      document.getElementById('mTax').innerText = tax.toLocaleString();
+
+      document.getElementById('pGrandTotal1').innerText = grandTotal.toLocaleString();
+      document.getElementById('pGrandTotal2').innerText = grandTotal.toLocaleString();
+      document.getElementById('mGrandTotal').innerText = grandTotal.toLocaleString();
+
+      updatePrint();
+    }
+
+    // 伝票表示内容をアップデート
+    function updatePrint() {
+      const issuer = document.getElementById('issuer').value;
+      const client = document.getElementById('client').value;
+      const addr = document.getElementById('issuerAddress').value;
+      const phone = document.getElementById('issuerPhone').value;
+      const date = document.getElementById('slipDate').value;
+      const payment = document.getElementById('paymentMethod').value;
+
+      document.getElementById('pIssuer').innerText = issuer;
+      document.getElementById('pIssuer2').innerText = issuer;
+      document.getElementById('mIssuer').innerText = issuer;
+
+      document.getElementById('pIssuerAddress').innerText = addr ? `住所: ${addr}` : '';
+      document.getElementById('pIssuerAddress2').innerText = addr ? `住所: ${addr}` : '';
+      document.getElementById('mIssuerAddress').innerText = addr ? `住所: ${addr}` : '';
+
+      document.getElementById('pIssuerPhone').innerText = phone ? `TEL: ${phone}` : '';
+      document.getElementById('pIssuerPhone2').innerText = phone ? `TEL: ${phone}` : '';
+      document.getElementById('mIssuerPhone').innerText = phone ? `TEL: ${phone}` : '';
+
+      document.getElementById('pClient').innerText = client;
+      document.getElementById('pClient2').innerText = client;
+      document.getElementById('mClient').innerText = client;
+
+      document.getElementById('pDate').innerText = date;
+      document.getElementById('pDate2').innerText = date;
+      document.getElementById('mDate').innerText = date;
+
+      document.getElementById('pPayment').innerText = payment;
+      document.getElementById('pPayment2').innerText = payment;
+      document.getElementById('mPayment').innerText = payment;
+    }
+
+    // モーダル表示
+    function openPreviewModal() {
+      updatePrint();
+      document.getElementById('previewModal').classList.remove('hidden');
+    }
+
+    function closePreviewModal() {
+      document.getElementById('previewModal').classList.add('hidden');
+    }
+
+    // 下書き保存
+    function saveDraft() {
+      const name = document.getElementById('draftName').value.trim();
+      if (!name) {
+        alert('下書き名を入力してください。');
+        return;
+      }
+      const items = [];
+      const names = document.querySelectorAll('.item-name');
+      const qtys = document.querySelectorAll('.item-qty');
+      const units = document.querySelectorAll('.item-unit');
+      const prices = document.querySelectorAll('.item-price');
+
+      names.forEach((n, i) => {
+        items.push({ name: n.value, qty: qtys[i].value, unit: units[i].value, price: prices[i].value });
+      });
+
+      const draftData = {
+        slipMode: currentSlipMode,
+        issuer: document.getElementById('issuer').value,
+        issuerAddress: document.getElementById('issuerAddress').value,
+        issuerPhone: document.getElementById('issuerPhone').value,
+        client: document.getElementById('client').value,
+        paymentMethod: document.getElementById('paymentMethod').value,
+        taxRate: document.getElementById('taxRate').value,
+        taxCalcType: document.getElementById('taxCalcType').value,
+        items: items
+      };
+
+      let drafts = JSON.parse(localStorage.getItem('dokoden_drafts') || '{}');
+      drafts[name] = draftData;
+      localStorage.setItem('dokoden_drafts', JSON.stringify(drafts));
+      updateDraftSelect();
+      alert(`下書き「${name}」を保存しました！`);
+    }
+
+    function updateDraftSelect() {
+      const select = document.getElementById('draftSelect');
+      select.innerHTML = '<option value="">-- 保存した下書きを選択 --</option>';
+      const drafts = JSON.parse(localStorage.getItem('dokoden_drafts') || '{}');
+      for (const name in drafts) {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.innerText = name;
+        select.appendChild(opt);
+      }
+    }
+
+    function loadDraft() {
+      const name = document.getElementById('draftSelect').value;
+      if (!name) {
+        alert('読み込む下書きを選択してください。');
+        return;
+      }
+      const drafts = JSON.parse(localStorage.getItem('dokoden_drafts') || '{}');
+      const d = drafts[name];
+      if (!d) return;
+
+      switchSlipMode(d.slipMode || 'delivery');
+
+      document.getElementById('issuer').value = d.issuer || '';
+      document.getElementById('issuerAddress').value = d.issuerAddress || '';
+      document.getElementById('issuerPhone').value = d.issuerPhone || '';
+      document.getElementById('client').value = d.client || '';
+      document.getElementById('paymentMethod').value = d.paymentMethod || '掛売り';
+      document.getElementById('taxRate').value = d.taxRate || '0.10';
+      document.getElementById('taxCalcType').value = d.taxCalcType || 'inclusive';
+
+      document.getElementById('itemRows').innerHTML = '';
+      if (d.items && d.items.length > 0) {
+        d.items.forEach(item => addRow(item.name, item.qty, item.unit, item.price));
+      } else {
+        addRow();
+      }
+      calculateTotals();
+      alert(`下書き「${name}」を呼び出しました。`);
+    }
+
+    function deleteDraft() {
+      const name = document.getElementById('draftSelect').value;
+      if (!name) {
+        alert('削除する下書きを選択してください。');
+        return;
+      }
+      let drafts = JSON.parse(localStorage.getItem('dokoden_drafts') || '{}');
+      delete drafts[name];
+      localStorage.setItem('dokoden_drafts', JSON.stringify(drafts));
+      updateDraftSelect();
+      alert('下書きを削除しました。');
+    }
+
+    // 明細の一括クリア
+    function clearAllRows() {
+      document.getElementById('itemRows').innerHTML = '';
+      addRow();
+      calculateTotals();
+    }
+
+    // 初期化
+    updateDraftSelect();
+    addRow();
+  </script>
+</body>
+</html>
+
