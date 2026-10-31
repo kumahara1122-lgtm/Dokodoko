@@ -3,8 +3,154 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>どこ伝 - 納品書・見積書をどこでも作成</title>
+  <title>どこ伝 - 写メ注文から納品書・見積書をすぐ作成</title>
+  <link rel="icon" href="data:image/png;base64,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">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* ===== ステップ1: 見た目だけの上書き(機能のコードには触れません) ===== */
+    :root { --navy:#0b3d8f; --green:#1f8f4e; --orange:#f08c00; --yellow:#ffc81f; }
+    body { background: linear-gradient(180deg, #fff8e8 0%, #eef8ee 55%, #e6f1ff 100%) fixed !important; }
+
+    /* ヘッダー */
+    .hdr-main { background: linear-gradient(135deg,#0b4fb3 0%,#0a7f8f 55%,#1f9a55 100%) !important; border: none !important; border-bottom: 5px solid var(--yellow) !important; }
+    .hdr-main .toggle { background: rgba(255,255,255,.18) !important; border: 1px solid rgba(255,255,255,.35) !important; }
+    .hdr-main .toggle button { background: transparent !important; color: #e6f0ff !important; box-shadow: none !important; }
+    .hdr-main .toggle button.bg-blue-600,
+    .hdr-main .toggle button.bg-indigo-600 { background: #fff !important; color: var(--navy) !important; }
+
+    /* カードの上に色の帯 */
+    .card-amber  { border-top: 4px solid #ffc81f !important; }
+    .card-blue   { border-top: 4px solid #2f7be0 !important; }
+    .card-green  { border-top: 4px solid #2e9e5b !important; }
+    .card-orange { border-top: 4px solid #f08c00 !important; }
+    .card-teal   { border-top: 4px solid #12a39a !important; }
+
+    /* ボタンの色 */
+    .bg-blue-600    { background-color: var(--navy) !important; }
+    .bg-emerald-600 { background-color: var(--green) !important; }
+    .bg-indigo-600  { background-color: var(--green) !important; }
+    .bg-amber-600   { background-color: var(--orange) !important; }
+
+    /* 明細の表の見出しと合計の帯 */
+    .thead-green { background: var(--green) !important; color: #fff !important; }
+    .grand-bar { display: inline-block; background: var(--green); color: #fff !important; padding: .4rem 1rem; border-radius: .75rem; }
+
+    /* 単位スタンプ(JSが作るボタン)を薄い黄色に */
+    #itemRows button[onclick^="setUnit"] { background: #fff4d2 !important; color: #7a5200 !important; border: 1px solid #f1d27a; box-shadow: none !important; }
+
+    /* 税率「空欄」のとき、消費税の金額部分を表示しない */
+    body.tax-blank .tax-amount { display: none; }
+
+    /* ---- 納品書と控の間: 切り取りやすいように余白を広げ、点線の切り取り線を入れる ---- */
+    #printable-area .slip-grid { gap: 0 !important; }
+    #printable-area .slip-left { position: relative; padding-right: 9mm !important; border-right: 2px dashed #64748b !important; }
+    #printable-area .slip-right { padding-left: 9mm !important; }
+    #printable-area .slip-left::after { content: "\2702"; position: absolute; top: -3px; right: -.62em; font-size: 15px; line-height: 1; color: #475569; background: #fff; }
+
+    /* ---- スマホ(幅719px以下): 明細の表を、横スクロール不要のコンパクトな「1品ずつのカード」表示にする ---- */
+    @media (max-width: 719px) {
+      .items-wrap { overflow-x: visible !important; border: none !important; }
+      .items-table { min-width: 0 !important; display: block; }
+      .items-table thead { display: none; }
+      #itemRows { display: block; }
+      #itemRows > tr {
+        display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .3rem .45rem;
+        padding: .5rem .55rem; margin: 0 0 .4rem 0;
+        border: 1px solid #cfe8d6 !important; border-radius: .75rem; background: #fbfefb;
+      }
+      #itemRows > tr > td { display: block; padding: 0 !important; min-width: 0; text-align: left !important; }
+      #itemRows > tr > td::before { display: block; font-size: .6rem; font-weight: 700; color: #4a6188; line-height: 1.1; margin-bottom: .1rem; }
+      #itemRows input { padding: .35rem .5rem !important; border-radius: .5rem !important; }
+
+      /* 1段目: 品名 / 赤伝 / 削除 */
+      #itemRows > tr > td:nth-child(1) { grid-column: 1 / span 2; grid-row: 1; }
+      #itemRows > tr > td:nth-child(1)::before { content: "品名"; }
+      #itemRows > tr > td:nth-child(6) { grid-column: 3; grid-row: 1; align-self: end; }
+      #itemRows > tr > td:nth-child(7) { grid-column: 4; grid-row: 1; align-self: end; text-align: right !important; }
+      /* 2段目: 数量 / 単価 / 金額 */
+      #itemRows > tr > td:nth-child(2) { grid-column: 1; grid-row: 2; }
+      #itemRows > tr > td:nth-child(2)::before { content: "数量"; }
+      #itemRows > tr > td:nth-child(4) { grid-column: 2; grid-row: 2; }
+      #itemRows > tr > td:nth-child(4)::before { content: "単価(円)"; }
+      #itemRows > tr > td:nth-child(5) { grid-column: 3 / span 2; grid-row: 2; text-align: right !important; font-weight: 800; font-size: .95rem; align-self: end; }
+      #itemRows > tr > td:nth-child(5)::before { content: "金額"; text-align: right; }
+      /* 3段目: 単位の入力欄とスタンプを1行に */
+      #itemRows > tr > td:nth-child(3) { grid-column: 1 / -1; grid-row: 3; display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; }
+      #itemRows > tr > td:nth-child(3)::before { display: none; }
+      #itemRows > tr > td:nth-child(3) > input { width: 4.2rem !important; margin-bottom: 0 !important; flex: 0 0 auto; }
+      #itemRows > tr > td:nth-child(3) > div { flex: 1 1 8rem; justify-content: flex-start !important; gap: .25rem !important; }
+      #itemRows > tr > td:nth-child(3) button { padding: .2rem .45rem !important; }
+
+      /* 赤伝・削除ボタンを小さめに */
+      #itemRows button[onclick^="toggleRowRed"] { padding: .2rem .4rem !important; font-size: .75rem !important; }
+      #itemRows button[onclick^="this.closest"] {
+        width: 2rem; height: 2rem; font-size: 1.2rem !important; line-height: 1;
+        background: #fff1f1; border: 1px solid #f3b8b8; border-radius: .5rem; padding: 0 !important;
+      }
+    }
+
+    /* ---- APIキー設定の開閉ボタン ---- */
+    .api-summary { list-style: none; display: block; text-align: center; cursor: pointer; user-select: none; padding: .6rem; border-radius: .75rem; font-weight: 700; font-size: .85rem; background: #e6f0ff; color: var(--navy); border: 1px solid #b5cff3; }
+    .api-summary::-webkit-details-marker { display: none; }
+    #apiDetails[open] .when-closed { display: none; }
+    #apiDetails:not([open]) .when-open { display: none; }
+    #apiKeyBadge { color: #166a39; font-weight: 800; margin-left: .25rem; }
+
+    /* ---- 仕上げ: カードの見出しを色付きの帯に ---- */
+    .card-amber, .card-blue, .card-green, .card-orange, .card-teal { overflow: hidden; padding-top: 0 !important; border-color: #e3e0d4 !important; box-shadow: 0 2px 8px rgba(11,61,143,.10) !important; }
+    .card-amber > :first-child, .card-blue > :first-child, .card-green > :first-child, .card-orange > :first-child, .card-teal > :first-child {
+      margin: 0 -1.25rem; padding: .65rem 1rem; justify-content: center; border-bottom: 1px solid #e3e0d4;
+    }
+    .card-green > :first-child.justify-between { justify-content: space-between; }
+    .card-amber > :first-child { background: #fff7d1; color: #5c4500; }
+    .card-blue > :first-child { background: #e8f1ff; color: #0c2f66; }
+    .card-green > :first-child { background: #e8f7ed; color: #124a2a; }
+    .card-orange > :first-child { background: #fff0dc; color: #6b3a00; }
+    .card-teal > :first-child { background: #e0f5f3; color: #0b4a46; }
+    :is(.card-amber, .card-blue, .card-green, .card-orange, .card-teal) > :first-child h2 { font-size: .95rem !important; font-weight: 800 !important; color: inherit !important; }
+
+    /* ---- 仕上げ: 入力欄 ---- */
+    :is(.card-amber, .card-blue, .card-green, .card-orange, .card-teal) :is(input:not([type=checkbox]):not([type=file]), select, textarea) {
+      background: #f8fbff !important; border-color: #bcd3f0 !important; font-size: .875rem !important;
+    }
+
+    /* ---- 仕上げ: 赤伝をハンコ風に(押すと赤く塗りつぶし) ---- */
+    #itemRows button[onclick^="toggleRowRed"] {
+      background: #fff !important; color: #c62828 !important; border: 2px solid #c62828 !important;
+      border-radius: .4rem !important; font-weight: 900 !important; font-size: .8rem !important; letter-spacing: .05em; padding: .25rem .45rem !important;
+    }
+    #itemRows button[onclick^="toggleRowRed"].bg-red-600 { background: #c62828 !important; color: #fff !important; }
+
+    /* ---- 仕上げ: スクショ用の拡大表示 ---- */
+    .modal-head { background: linear-gradient(135deg,#0b4fb3 0%,#0a7f8f 55%,#1f9a55 100%) !important; border-bottom: 4px solid var(--yellow); }
+    .modal-foot button { background: var(--navy) !important; }
+
+    /* ---- 読み取り成功を目立たせる ---- */
+    #aiStatus.bg-emerald-50 { font-size: .95rem !important; font-weight: 800; padding: .8rem !important; border-width: 2px !important; }
+    @keyframes flashOk {
+      0%   { box-shadow: 0 0 0 0 rgba(31,143,78,.0); }
+      15%  { box-shadow: 0 0 0 6px rgba(31,143,78,.55); }
+      100% { box-shadow: 0 0 0 0 rgba(31,143,78,.0); }
+    }
+    .flash-ok { animation: flashOk 2.4s ease-out 1; }
+
+    /* ---- 印刷・拡大表示の表: 1行を1段にして、品名は左寄せ(単位が「ケー/ス」と折り返さないように) ---- */
+    #printable-area table th, #printable-area table td { padding: 2px 5px !important; line-height: 1.25; }
+    #printable-area table td:first-child { text-align: left !important; }
+    #printable-area table td:not(:first-child), #printable-area table th:not(:first-child) { white-space: nowrap; }
+    #modalPrintArea table td:first-child { text-align: left !important; }
+    #modalPrintArea table td:not(:first-child), #modalPrintArea table th:not(:first-child) { white-space: nowrap; }
+    @media print { #printable-area { max-width: none !important; } }
+
+    /* ---- 控なしボタン ---- */
+    #toggleCopyBtn { background: #e6f0ff; color: var(--navy); border: 1px solid #b5cff3; }
+    #toggleCopyBtn.is-off { background: #fff0dc; color: #6b3a00; border-color: #f3c88a; }
+    body.no-copy #printable-area .slip-right { display: none !important; }
+    body.no-copy #printable-area .slip-left { border-right: none !important; }
+    body.no-copy #printable-area .slip-left::after { display: none !important; }
+
+    @media print { body { background: #fff !important; } }
+  </style>
   <style>
     @media print {
       @page {
@@ -27,32 +173,40 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 p-3 sm:p-6 pb-20">
   
-  <div class="max-w-3xl mx-auto space-y-4 no-print">
+  <div class="max-w-5xl mx-auto space-y-4 no-print">
     <!-- ヘッダー -->
-    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="hdr-main bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-emerald-500 text-white font-black text-lg px-3 py-2 rounded-xl shadow">
-          どこ伝
-        </div>
+        <img src="data:image/webp;base64,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" alt="どこ伝のロゴ" class="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl shadow-lg">
         <div>
-          <h1 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">どこ伝</h1>
-          <p class="text-[11px] text-slate-500">写メ注文から納品書・見積書をすぐ作成</p>
+          <h1 class="text-3xl sm:text-4xl font-black text-white tracking-wide leading-tight">どこでも伝票</h1>
+          <p class="text-[11px] sm:text-xs text-sky-100">写メ注文から納品書・見積書をすぐ作成</p>
         </div>
       </div>
 
       <!-- 納品書 / 見積書 切り替えボタン -->
-      <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 w-full sm:w-auto">
+      <div class="toggle flex bg-slate-100 p-1 rounded-xl border border-slate-200 w-full sm:w-auto">
         <button onclick="switchSlipMode('delivery')" id="modeDeliveryBtn" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm">納品書</button>
         <button onclick="switchSlipMode('estimate')" id="modeEstimateBtn" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">見積書</button>
       </div>
     </div>
 
+    <!-- 上段: API設定 / 写メ読み取り / LINE注文 (広い画面では横3列) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
     <!-- 1. Gemini API 設定カード -->
-    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+    <div class="card-amber bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
       <div class="flex items-center gap-2">
         <span class="text-amber-500 text-base">🔑</span>
         <h2 class="text-xs font-bold text-slate-800">Gemini API 設定</h2>
       </div>
+
+      <details id="apiDetails" open>
+        <summary class="api-summary">
+          <span class="when-open">▲ キー設定をしまう</span>
+          <span class="when-closed">▼ キー設定を開く <span id="apiKeyBadge"></span></span>
+        </summary>
+        <div class="space-y-3 pt-3">
 
       <div>
         <label class="block text-[11px] font-semibold text-slate-600 mb-1">APIキー</label>
@@ -74,30 +228,35 @@
       <div>
         <label class="block text-[11px] font-semibold text-slate-600 mb-1">モデル</label>
         <select id="geminiModel" class="w-full p-2.5 border rounded-xl text-xs bg-slate-50">
-          <option value="gemini-2.5-flash">gemini-2.5-flash (高速・最新)</option>
-          <option value="gemini-1.5-flash">gemini-1.5-flash (標準)</option>
+          <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (最速・おすすめ)</option>
+          <option value="gemini-3.6-flash">gemini-3.6-flash (標準)</option>
+          <option value="gemini-3.8-flash">gemini-3.8-flash (最新・遅いことあり)</option>
         </select>
       </div>
+        </div>
+      </details>
     </div>
 
     <!-- 2. 写メ・ファイルからの読み取りカード -->
-    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+    <div class="card-blue bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
       <div class="flex items-center gap-2">
         <span class="text-blue-600 text-base">📷</span>
         <h2 class="text-xs font-bold text-slate-800">写メ・データファイルから読み取り</h2>
       </div>
-      <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="handleImageSelect(event)">
-      <button onclick="document.getElementById('imageInput').click()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+      <input type="file" id="imageInput" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;" onchange="handleImageSelect(event)">
+      <label for="imageInput" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer select-none">
         📁 アルバム・ファイルから選ぶ / 撮影する
-      </button>
+      </label>
       <div id="previewContainer" class="mt-3 hidden space-y-2">
         <img id="imagePreview" class="w-full h-44 object-contain bg-slate-900 rounded-xl border">
-        <button onclick="analyzeImage()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition">✨ AIで文字を読み取る</button>
+        <button onclick="analyzeImage()" id="analyzeBtn" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition disabled:opacity-50">✨ AIで文字を読み取る</button>
       </div>
+      <!-- 読み取りの状況・エラー表示 -->
+      <div id="aiStatus" class="hidden text-[11px] rounded-xl p-2.5 leading-relaxed whitespace-pre-wrap break-words" role="status"></div>
     </div>
 
     <!-- 3. LINE注文を貼り付けカード -->
-    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+    <div class="card-green bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
       <div class="flex items-center gap-2">
         <span class="text-emerald-600 text-base">💬</span>
         <h2 class="text-xs font-bold text-slate-800">LINE注文を貼り付け</h2>
@@ -111,32 +270,15 @@
       <p class="text-[10px] text-slate-500">全角数字・改行・スペース区切りに対応。数量のない商品は空欄にし、勝手に数量を補いません。</p>
     </div>
 
-    <!-- 4. 名前付き下書き管理カード -->
-    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-      <div class="flex items-center gap-2">
-        <span class="text-amber-600 text-base">📝</span>
-        <h2 class="text-xs font-bold text-slate-800">名前付き下書き管理</h2>
-      </div>
-      <div class="flex gap-2">
-        <input type="text" id="draftName" placeholder="下書き名を入力 (例: 〇〇商店 午前分)" class="flex-1 p-2 border rounded-xl text-xs bg-slate-50">
-        <button onclick="saveDraft()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow">💾 下書き保存</button>
-      </div>
-      <div class="flex gap-2 items-center">
-        <select id="draftSelect" class="flex-1 p-2 border rounded-xl text-xs bg-slate-50">
-          <option value="">-- 保存した下書きを選択 --</option>
-        </select>
-        <button onclick="loadDraft()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs px-3 py-2 rounded-xl">📂 呼出</button>
-        <button onclick="deleteDraft()" class="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-3 py-2 rounded-xl">🗑️ 削除</button>
-      </div>
     </div>
 
     <!-- 5. 伝票情報カード -->
-    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+    <div class="card-teal bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
       <div class="flex items-center gap-2">
         <span class="text-indigo-600 text-base">📋</span>
         <h2 class="text-xs font-bold text-slate-800">伝票情報設定</h2>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
         <div>
           <label class="block font-semibold text-slate-600 mb-1">発行元（納品者名）</label>
           <input type="text" id="issuer" placeholder="発行元名を入力" class="w-full p-2.5 border rounded-xl bg-slate-50" oninput="updatePrint()">
@@ -160,30 +302,31 @@
         <div>
           <label class="block font-semibold text-slate-600 mb-1">支払方法</label>
           <select id="paymentMethod" class="w-full p-2.5 border rounded-xl bg-slate-50" onchange="updatePrint()">
-            <option value="現金">現金</option>
-            <option value="掛売り" selected>掛売り</option>
+            <option value="現金" selected>現金</option>
+            <option value="掛売り">掛売り</option>
             <option value="振込">振込</option>
           </select>
         </div>
         <div>
           <label class="block font-semibold text-slate-600 mb-1">消費税率</label>
           <select id="taxRate" class="w-full p-2.5 border rounded-xl bg-slate-50" onchange="calculateTotals()">
-            <option value="0.08">8% (軽減税率)</option>
-            <option value="0.10" selected>10%</option>
+            <option value="0.08" selected>8% (軽減税率)</option>
+            <option value="0.10">10%</option>
+            <option value="blank">空欄（消費税を表示しない）</option>
           </select>
         </div>
         <div>
           <label class="block font-semibold text-slate-600 mb-1">税の計算</label>
           <select id="taxCalcType" class="w-full p-2.5 border rounded-xl bg-slate-50" onchange="calculateTotals()">
-            <option value="inclusive" selected>入力単価は税込</option>
-            <option value="exclusive">入力単価は税別</option>
+            <option value="inclusive">入力単価は税込</option>
+            <option value="exclusive" selected>入力単価は税別</option>
           </select>
         </div>
       </div>
     </div>
 
     <!-- 6. 明細を確認・修正カード -->
-    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+    <div class="card-green bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
       <div class="flex justify-between items-center">
         <h2 class="text-xs font-bold text-slate-800 flex items-center gap-2">
           <span>📝</span><span>明細を確認・修正</span>
@@ -191,9 +334,9 @@
         <button onclick="addRow()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow">+ 商品を追加</button>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-xs text-left min-w-[620px]">
-          <thead class="bg-slate-100 text-slate-700">
+      <div class="items-wrap overflow-x-auto">
+        <table class="items-table w-full text-xs text-left min-w-[620px]">
+          <thead class="thead-green bg-slate-100 text-slate-700">
             <tr>
               <th class="p-2 rounded-l-lg">品名</th>
               <th class="p-2 w-16 text-center">数量</th>
@@ -211,8 +354,8 @@
       <!-- 合計表示（納品書モードの時のみ画面下に表示） -->
       <div id="screenTotalArea" class="border-t pt-3 text-right space-y-1 text-xs bg-slate-50 p-4 rounded-xl border">
         <div>明細小計: ¥<span id="subtotal">0</span></div>
-        <div>消費税 (参考): ¥<span id="tax">0</span></div>
-        <div class="text-base font-black text-blue-600">合計: ¥<span id="grandTotal">0</span></div>
+        <div>消費税 (参考): <span class="tax-amount">¥<span id="tax">0</span></span></div>
+        <div class="grand-bar text-base font-black text-blue-600">合計: ¥<span id="grandTotal">0</span></div>
       </div>
 
       <!-- アクションボタン群 -->
@@ -223,18 +366,40 @@
         <button onclick="window.print()" id="printBtnLabel" class="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
           🖨️ A4二分割で印刷
         </button>
+        <button id="toggleCopyBtn" type="button" class="px-4 py-3 font-bold text-xs rounded-xl transition" aria-pressed="false">📄 納品控: あり</button>
         <button onclick="clearAllRows()" class="px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl transition">
           🗑️ 明細をクリア
         </button>
       </div>
     </div>
+
+    <!-- 4. 名前付き下書き管理カード -->
+    <div class="card-orange bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-amber-600 text-base">📝</span>
+        <h2 class="text-xs font-bold text-slate-800">名前付き下書き管理</h2>
+      </div>
+      <div class="flex gap-2">
+        <input type="text" id="draftName" placeholder="下書き名を入力 (例: 〇〇商店 午前分)" class="flex-1 p-2 border rounded-xl text-xs bg-slate-50">
+        <button onclick="saveDraft()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow">💾 下書き保存</button>
+      </div>
+      <div class="flex gap-2 items-center">
+        <select id="draftSelect" class="flex-1 p-2 border rounded-xl text-xs bg-slate-50">
+          <option value="">-- 保存した下書きを選択 --</option>
+        </select>
+        <button onclick="loadDraft()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs px-3 py-2 rounded-xl">📂 呼出</button>
+        <button onclick="deleteDraft()" class="bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-3 py-2 rounded-xl">🗑️ 削除</button>
+      </div>
+    </div>
+
+    <p class="text-center text-[11px] text-slate-500 pt-2">▼ 納品書プレビュー（印刷されるイメージ）</p>
   </div>
 
   <!-- A4横向き印刷プレビューエリア -->
   <div id="printable-area" class="max-w-5xl mx-auto bg-white p-6 border border-slate-300 my-8 shadow-sm rounded-xl">
-    <div class="grid grid-cols-2 gap-6">
+    <div class="slip-grid grid grid-cols-2 gap-6">
       <!-- 伝票 (左側) -->
-      <div class="border-r pr-6 flex flex-col justify-between">
+      <div class="slip-left border-r pr-6 flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-start mb-3 border-b-2 border-slate-800 pb-2">
             <div>
@@ -242,7 +407,7 @@
             </div>
             <div class="text-right text-[10px] text-slate-600">
               <p>日付: <span id="pDate"></span></p>
-              <p class="font-bold">支払: <span id="pPayment">掛売り</span></p>
+              <p class="font-bold">支払: <span id="pPayment">現金</span></p>
             </div>
           </div>
           <div class="flex justify-between items-end mb-3">
@@ -272,14 +437,14 @@
         <div id="printTotal1" class="flex justify-end text-xs pt-2">
           <div class="w-44 space-y-1 border p-2 bg-slate-50 rounded">
             <div class="flex justify-between text-[10px]"><span>小計:</span><span>¥<span id="pSubtotal1">0</span></span></div>
-            <div class="flex justify-between text-[10px]"><span>消費税:</span><span>¥<span id="pTax1">0</span></span></div>
+            <div class="flex justify-between text-[10px]"><span>消費税:</span><span class="tax-amount">¥<span id="pTax1">0</span></span></div>
             <div class="flex justify-between font-bold border-t pt-1 text-xs"><span>合計:</span><span>¥<span id="pGrandTotal1">0</span></span></div>
           </div>
         </div>
       </div>
 
       <!-- 控 (右側) -->
-      <div class="pl-2 flex flex-col justify-between">
+      <div class="slip-right pl-2 flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-start mb-3 border-b-2 border-slate-800 pb-2">
             <div>
@@ -287,7 +452,7 @@
             </div>
             <div class="text-right text-[10px] text-slate-600">
               <p>日付: <span id="pDate2"></span></p>
-              <p class="font-bold">支払: <span id="pPayment2">掛売り</span></p>
+              <p class="font-bold">支払: <span id="pPayment2">現金</span></p>
             </div>
           </div>
           <div class="flex justify-between items-end mb-3">
@@ -317,7 +482,7 @@
         <div id="printTotal2" class="flex justify-end text-xs pt-2">
           <div class="w-44 space-y-1 border p-2 bg-slate-50 rounded">
             <div class="flex justify-between text-[10px]"><span>小計:</span><span>¥<span id="pSubtotal2">0</span></span></div>
-            <div class="flex justify-between text-[10px]"><span>消費税:</span><span>¥<span id="pTax2">0</span></span></div>
+            <div class="flex justify-between text-[10px]"><span>消費税:</span><span class="tax-amount">¥<span id="pTax2">0</span></span></div>
             <div class="flex justify-between font-bold border-t pt-1 text-xs"><span>合計:</span><span>¥<span id="pGrandTotal2">0</span></span></div>
           </div>
         </div>
@@ -327,13 +492,13 @@
 
   <!-- スクショ用 伝票拡大モーダル -->
   <div id="previewModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 no-print">
-    <div class="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-      <div class="p-3 bg-slate-900 text-white flex justify-between items-center">
+    <div class="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[96vh]">
+      <div class="modal-head p-2.5 bg-slate-900 text-white flex justify-between items-center">
         <span id="modalHeaderTitle" class="text-xs font-bold">📸 LINE・スクショ用 納品書拡大表示</span>
         <button onclick="closePreviewModal()" class="text-slate-400 hover:text-white font-bold px-2 py-1">✕ 閉じる</button>
       </div>
       
-      <div class="p-5 overflow-y-auto bg-slate-50 flex-1">
+      <div class="modal-body p-3 overflow-y-auto bg-slate-50 flex-1 min-h-0">
         <div id="modalPrintArea" class="bg-white p-5 border rounded-xl shadow-sm text-slate-900">
           <div class="flex justify-between items-start mb-3 border-b-2 border-slate-900 pb-2">
             <div>
@@ -371,22 +536,23 @@
           <div id="modalTotalBox" class="flex justify-end text-xs">
             <div class="w-48 space-y-1 border p-2 bg-slate-50 rounded-lg">
               <div class="flex justify-between"><span>小計:</span><span>¥<span id="mSubtotal">0</span></span></div>
-              <div class="flex justify-between"><span>消費税:</span><span>¥<span id="mTax">0</span></span></div>
+              <div class="flex justify-between"><span>消費税:</span><span class="tax-amount">¥<span id="mTax">0</span></span></div>
               <div class="flex justify-between font-bold border-t pt-1 text-sm text-blue-600"><span>合計:</span><span>¥<span id="mGrandTotal">0</span></span></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="p-3 bg-white border-t text-center">
-        <p class="text-[11px] text-slate-500 mb-2">画面をスクリーンショット撮影してLINE等で送信してください。</p>
-        <button onclick="closePreviewModal()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl">閉じる</button>
+      <div class="modal-foot p-2 bg-white border-t text-center">
+        <p class="text-[11px] text-slate-500 mb-1.5">画面をスクリーンショット撮影してLINE等で送信してください。<span id="modalFitNote" class="block text-[10px] text-emerald-700 font-bold"></span></p>
+        <button onclick="closePreviewModal()" class="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl">閉じる</button>
       </div>
     </div>
   </div>
 
   <script>
     let selectedBase64 = '';
+    let selectedMime = '';
     let currentSlipMode = 'delivery'; // 'delivery' or 'estimate'
     
     // 今日の日付をセット
@@ -524,63 +690,332 @@
       calculateTotals();
     }
 
-    // 画像選択処理
-    function handleImageSelect(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        selectedBase64 = evt.target.result.split(',')[1];
-        document.getElementById('imagePreview').src = evt.target.result;
-        document.getElementById('previewContainer').classList.remove('hidden');
+    // ============================================================
+    // 写メ読み取り (Gemini API)
+    // ============================================================
+
+    // Geminiがインライン画像として受け付ける形式
+    const GEMINI_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+    // 大きい写真は長辺をこのサイズに縮小 (通信量とAPI上限対策)
+    const MAX_IMAGE_EDGE = 2000;
+    // このサイズを超える画像は縮小してJPEGに変換
+    const RESIZE_THRESHOLD_BYTES = 3 * 1024 * 1024;
+    // base64後のおおよその上限 (リクエスト全体20MB未満に収める)
+    const MAX_BASE64_LENGTH = 15 * 1024 * 1024;
+
+    // AIの応答を待つ上限 (ミリ秒)
+    const ANALYZE_TIMEOUT_MS = 90 * 1000;
+
+    let isAnalyzing = false;
+
+    // 読み取り状況・エラーを画面に表示 (type: info / success / error)
+    function showAiStatus(message, type) {
+      const el = document.getElementById('aiStatus');
+      if (!message) {
+        el.classList.add('hidden');
+        el.textContent = '';
+        return;
+      }
+      const styles = {
+        info: 'bg-blue-50 text-blue-800 border border-blue-200',
+        success: 'bg-emerald-50 text-emerald-800 border border-emerald-200',
+        error: 'bg-red-50 text-red-700 border border-red-200'
       };
-      reader.readAsDataURL(file);
+      el.className = 'text-[11px] rounded-xl p-2.5 leading-relaxed whitespace-pre-wrap break-words ' + (styles[type] || styles.info);
+      el.textContent = message;
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('画像ファイルを読み込めませんでした。'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function loadImageElement(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error('この端末のブラウザでは画像を開けませんでした。'));
+        img.src = src;
+      });
+    }
+
+    // 選んだ画像の実際の形式を判定 (ファイルのtype → データURLの順)
+    function detectMime(file, dataUrl) {
+      if (file.type && file.type.indexOf('image/') === 0) {
+        return file.type.toLowerCase();
+      }
+      const m = /^data:([^;,]+)/.exec(dataUrl || '');
+      return m ? m[1].toLowerCase() : '';
+    }
+
+    // 画像選択処理
+    async function handleImageSelect(e) {
+      const input = e.target;
+      const file = input.files && input.files[0];
+      if (!file) return;
+
+      // 前回の画像データを必ず破棄 (別の画像を選び直した時に古い画像を送らない)
+      selectedBase64 = '';
+      selectedMime = '';
+      document.getElementById('previewContainer').classList.add('hidden');
+      showAiStatus('画像を読み込み中です...', 'info');
+
+      try {
+        let dataUrl = await readFileAsDataURL(file);
+        let mime = detectMime(file, dataUrl);
+        const supported = GEMINI_IMAGE_MIMES.indexOf(mime) !== -1;
+
+        // 大きい画像・未対応形式はJPEGに変換、それ以外は元の形式のまま送る
+        if (file.size > RESIZE_THRESHOLD_BYTES || !supported) {
+          try {
+            const img = await loadImageElement(dataUrl);
+            const w = img.naturalWidth;
+            const h = img.naturalHeight;
+            const scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(w, h));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(w * scale));
+            canvas.height = Math.max(1, Math.round(h * scale));
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff'; // 透過PNGの背景が黒くならないように
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            mime = 'image/jpeg';
+          } catch (convErr) {
+            if (!supported) {
+              throw new Error('この画像形式(' + (mime || '不明') + ')は読み取れません。JPEG・PNG・WEBPの画像を選んでください。');
+            }
+            // 対応形式なら、変換できなくても元の画像をそのまま使う
+          }
+        }
+
+        const commaIndex = dataUrl.indexOf(',');
+        const base64 = commaIndex >= 0 ? dataUrl.slice(commaIndex + 1) : '';
+        if (!base64) {
+          throw new Error('画像データを取り出せませんでした。別の画像でお試しください。');
+        }
+        if (base64.length > MAX_BASE64_LENGTH) {
+          throw new Error('画像が大きすぎます。画質を下げるか、別の画像でお試しください。');
+        }
+
+        selectedBase64 = base64;
+        selectedMime = mime;
+        document.getElementById('imagePreview').src = dataUrl;
+        document.getElementById('previewContainer').classList.remove('hidden');
+        showAiStatus('画像を読み込みました。「AIで文字を読み取る」を押してください。(形式: ' + mime + ')', 'info');
+      } catch (err) {
+        console.error(err);
+        showAiStatus(err.message || '画像の読み込みに失敗しました。', 'error');
+      } finally {
+        input.value = ''; // 同じ画像を選び直しても反応するようにする
+      }
+    }
+
+    // APIエラーを原因が分かる文章に変換
+    function describeApiError(status, data) {
+      const apiMsg = data && data.error && data.error.message ? String(data.error.message) : '';
+      let reason;
+      if (status === 400 && /api key/i.test(apiMsg)) {
+        reason = 'APIキーが正しくありません。キーを確認してください。';
+      } else if (status === 400) {
+        reason = 'リクエストが受け付けられませんでした。画像またはモデルの指定を確認してください。';
+      } else if (status === 401) {
+        reason = '認証に失敗しました。APIキーを確認してください。';
+      } else if (status === 403) {
+        reason = 'このAPIキーでは利用できません(権限不足、または利用できない地域の可能性があります)。';
+      } else if (status === 404) {
+        reason = '選んだモデルが見つかりません。提供が終了している可能性があるため、別のモデルを選んでください。';
+      } else if (status === 413) {
+        reason = '画像が大きすぎます。';
+      } else if (status === 429) {
+        reason = '利用上限に達しました。しばらく待ってからもう一度お試しください。';
+      } else if (status >= 500) {
+        reason = 'Gemini側が混み合っているか障害中です。少し待ってからもう一度お試しください。';
+      } else {
+        reason = '読み取りに失敗しました。';
+      }
+      let text = 'エラー(' + status + '): ' + reason;
+      if (apiMsg) text += '\n詳細: ' + apiMsg.slice(0, 300);
+      return text;
+    }
+
+    // 全角数字などを半角にして数値文字列を取り出す (取り出せなければ空欄)
+    function toNumberString(v) {
+      if (v === null || v === undefined) return '';
+      const s = String(v)
+        .replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+        .replace(/[．]/g, '.')
+        .replace(/[,，]/g, '');
+      const m = s.match(/-?\d+(?:\.\d+)?/);
+      return m ? m[0] : '';
+    }
+
+    // AIの返答テキストから明細の配列を取り出す
+    function parseItemsFromText(text) {
+      let cleaned = text.replace(/```json|```/gi, '').trim();
+      let parsed;
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch (e1) {
+        const s = cleaned.indexOf('[');
+        const t = cleaned.lastIndexOf(']');
+        if (s !== -1 && t > s) {
+          try {
+            parsed = JSON.parse(cleaned.slice(s, t + 1));
+          } catch (e2) { /* 下で処理 */ }
+        }
+      }
+      if (parsed && !Array.isArray(parsed) && Array.isArray(parsed.items)) {
+        parsed = parsed.items;
+      }
+      if (!Array.isArray(parsed)) {
+        throw new Error('AIの返答を明細として解釈できませんでした。\n返答の冒頭: ' + cleaned.slice(0, 150));
+      }
+      return parsed;
+    }
+
+    // 読み取った明細を入力画面に反映 (品名などはDOMのvalueに直接入れるので、引用符を含んでも壊れない)
+    function applyAiItems(items) {
+      const valid = items.filter(it => it && typeof it === 'object');
+      const prepared = valid.map(it => ({
+        name: it.name === null || it.name === undefined ? '' : String(it.name).trim(),
+        qty: toNumberString(it.quantity),
+        unit: it.unit === null || it.unit === undefined ? '' : String(it.unit).trim(),
+        price: toNumberString(it.price)
+      })).filter(it => it.name || it.qty || it.price);
+
+      if (prepared.length === 0) {
+        return 0;
+      }
+
+      document.getElementById('itemRows').innerHTML = '';
+      prepared.forEach(it => {
+        addRow();
+        const rows = document.querySelectorAll('#itemRows tr');
+        const tr = rows[rows.length - 1];
+        tr.querySelector('.item-name').value = it.name;
+        tr.querySelector('.item-qty').value = it.qty;
+        tr.querySelector('.item-unit').value = it.unit;
+        tr.querySelector('.item-price').value = it.price;
+      });
+      calculateTotals();
+
+      // 読み取った内容を、「LINE注文を貼り付け」欄にもテキストで入れる(1行ごとに「品名 数量+単位」)
+      const lineBox = document.getElementById('lineInput');
+      if (lineBox) {
+        lineBox.value = prepared.map(it => {
+          const q = it.qty ? it.qty + it.unit : '';
+          return [it.name, q].filter(Boolean).join(' ');
+        }).filter(Boolean).join('\n');
+      }
+      return prepared.length;
     }
 
     // Gemini APIによる画像解析
     async function analyzeImage() {
-      const apiKey = document.getElementById('apiKey').value;
+      if (isAnalyzing) return;
+
+      const apiKey = document.getElementById('apiKey').value.trim();
       const model = document.getElementById('geminiModel').value;
+      const btn = document.getElementById('analyzeBtn');
+
       if (!apiKey) {
-        alert('Gemini APIキーを入力してください。');
+        showAiStatus('Gemini APIキーが入力されていません。上の「Gemini API 設定」に入力してください。', 'error');
+        return;
+      }
+      if (!selectedBase64 || !selectedMime) {
+        showAiStatus('画像が選ばれていません。先に画像を選んでください。', 'error');
         return;
       }
       if (document.getElementById('saveKey').checked) {
         localStorage.setItem('gemini_api_key', apiKey);
       }
 
-      alert('AIが画像を解析中です...');
-
       const prompt = `この画像（手書き注文書・伝票）から品名、数量、単位、単価を抽出し、以下のJSON配列フォーマットのみで返してください。余計な解説文は含めないでください。
+読み取れない項目は推測せず null にしてください。
 [
   {"name": "品名", "quantity": 数量(数値), "unit": "単位", "price": 単価(数値)}
 ]`;
 
-      try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{
-              parts: [
-                { text: prompt },
-                { inline_data: { mime_type: "image/jpeg", data: selectedBase64 } }
-              ]
-            }]
-          })
-        });
-        const data = await res.json();
-        const text = data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
-        const items = JSON.parse(text);
+      isAnalyzing = true;
+      btn.disabled = true;
+      const startedAt = Date.now();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), ANALYZE_TIMEOUT_MS);
+      const tickId = setInterval(() => {
+        showAiStatus('AIが画像を解析中です。(' + Math.round((Date.now() - startedAt) / 1000) + '秒経過)\n通常は10〜30秒ほどかかります。', 'info');
+      }, 1000);
+      showAiStatus('AIが画像を解析中です。(0秒経過)\n通常は10〜30秒ほどかかります。', 'info');
 
-        document.getElementById('itemRows').innerHTML = '';
-        items.forEach(item => {
-          addRow(item.name, item.quantity, item.unit || '', item.price);
-        });
-        calculateTotals();
+      try {
+        let res;
+        try {
+          res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            signal: controller.signal,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [
+                  { text: prompt },
+                  { inline_data: { mime_type: selectedMime, data: selectedBase64 } }
+                ]
+              }],
+              generationConfig: { responseMimeType: 'application/json', thinkingConfig: { thinkingLevel: 'low' } }
+            })
+          });
+        } catch (netErr) {
+          console.error(netErr);
+          if (netErr && netErr.name === 'AbortError') {
+            throw new Error('AIの応答が' + (ANALYZE_TIMEOUT_MS / 1000) + '秒以内に返りませんでした。(モデル: ' + model + ')\nモデルが混み合っている可能性があります。別のモデルに切り替えるか、電波状況を確認してもう一度お試しください。');
+          }
+          throw new Error('通信に失敗しました。電波状況・オフライン状態を確認してください。');
+        }
+
+        let data = null;
+        try {
+          data = await res.json();
+        } catch (jsonErr) { /* 本文がJSONでない場合 */ }
+
+        if (!res.ok) {
+          throw new Error(describeApiError(res.status, data));
+        }
+        if (!data) {
+          throw new Error('Geminiから想定外の応答が返りました。もう一度お試しください。');
+        }
+        if (data.promptFeedback && data.promptFeedback.blockReason) {
+          throw new Error('この画像はAIの安全設定によりブロックされました(' + data.promptFeedback.blockReason + ')。別の画像でお試しください。');
+        }
+
+        const cand = data.candidates && data.candidates[0];
+        if (!cand) {
+          throw new Error('AIから結果が返りませんでした。画像を撮り直してお試しください。');
+        }
+        const parts = cand.content && cand.content.parts;
+        const text = parts ? parts.map(p => p.text || '').join('') : '';
+        if (!text.trim()) {
+          throw new Error('AIの返答が空でした' + (cand.finishReason ? '(理由: ' + cand.finishReason + ')' : '') + '。画像を撮り直してお試しください。');
+        }
+
+        const items = parseItemsFromText(text);
+        const count = applyAiItems(items);
+        if (count === 0) {
+          showAiStatus('画像から明細を読み取れませんでした。文字が大きく写るように撮り直してお試しください。(入力済みの明細はそのままです)', 'error');
+        } else {
+          showAiStatus(count + '件の明細を読み取りました。品名・数量・単価に誤りがないか、下の明細で確認してください。', 'success');
+        }
       } catch (err) {
-        alert('読み取りに失敗しました。APIキーまたは画像を確認してください。');
         console.error(err);
+        showAiStatus(err.message || '読み取りに失敗しました。', 'error');
+      } finally {
+        clearTimeout(timeoutId);
+        clearInterval(tickId);
+        isAnalyzing = false;
+        btn.disabled = false;
       }
     }
 
@@ -606,6 +1041,8 @@
             <button type="button" onclick="setUnit(this, '袋')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">袋</button>
             <button type="button" onclick="setUnit(this, 'パック')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">パック</button>
             <button type="button" onclick="setUnit(this, '本')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">本</button>
+            <button type="button" onclick="setUnit(this, '半分')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">半分</button>
+            <button type="button" onclick="setUnit(this, '4分の1')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">4分の1</button>
           </div>
         </td>
         <td class="p-1.5">
@@ -631,7 +1068,11 @@
       const prices = document.querySelectorAll('.item-price');
       const totals = document.querySelectorAll('.item-total');
       
-      const taxRate = parseFloat(document.getElementById('taxRate').value);
+      // 税率「空欄」: 消費税は計算せず(0扱い)、伝票上の消費税の金額欄を空欄にする
+      const taxRateValue = document.getElementById('taxRate').value;
+      const taxBlank = (taxRateValue === 'blank');
+      const taxRate = taxBlank ? 0 : parseFloat(taxRateValue);
+      document.body.classList.toggle('tax-blank', taxBlank);
       const taxCalcType = document.getElementById('taxCalcType').value;
 
       let subtotal = 0;
@@ -839,6 +1280,196 @@
     updateDraftSelect();
     addRow();
   </script>
+  <!-- スクショ用拡大表示: 品数が多くても伝票全体が1画面に収まるよう自動で縮小 (表示だけの処理) -->
+  <script id="modalFitScript">
+    (function () {
+      try {
+        var modal = document.getElementById('previewModal');
+        var area = document.getElementById('modalPrintArea');
+        var body = modal && modal.querySelector('.modal-body');
+        var note = document.getElementById('modalFitNote');
+        if (!modal || !area || !body || !note) return;
+        if (!(window.CSS && CSS.supports && CSS.supports('zoom', '1'))) return; // 未対応ブラウザでは従来どおりスクロール
+
+        var MIN_SCALE = 0.6; // これ以上は小さくしない(読めなくなるため)
+
+        function overflowing() {
+          return body.scrollHeight - body.clientHeight > 1;
+        }
+
+        function fit() {
+          if (modal.classList.contains('hidden')) return;
+          area.style.zoom = '';
+          note.textContent = '';
+          if (!overflowing()) return; // 収まっているなら何もしない
+
+          var cs = getComputedStyle(body);
+          var pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+          var s = 1;
+          for (var i = 0; i < 10; i++) {
+            var content = body.scrollHeight - pad;
+            var room = body.clientHeight - pad;
+            if (content <= room) break;
+            s = Math.max(MIN_SCALE, s * (room / content) * 0.99);
+            area.style.zoom = String(s);
+            if (s <= MIN_SCALE) break;
+          }
+          if (overflowing()) {
+            note.textContent = '品数が多いため、下にスクロールして2回に分けて撮影してください';
+          } else {
+            note.textContent = '全体が1画面に収まるよう ' + Math.round(s * 100) + '% に縮小しています';
+          }
+        }
+
+        // 拡大表示が開かれたとき(hiddenクラスが外れたとき)に実行
+        new MutationObserver(function () {
+          if (!modal.classList.contains('hidden')) requestAnimationFrame(fit);
+        }).observe(modal, { attributes: true, attributeFilter: ['class'] });
+
+        window.addEventListener('resize', function () { requestAnimationFrame(fit); });
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
+  <!-- APIキー設定の開閉 (表示だけの処理。ほかの機能には触れません) -->
+  <script id="apiPanelScript">
+    (function () {
+      try {
+        var details = document.getElementById('apiDetails');
+        var badge = document.getElementById('apiKeyBadge');
+        var keyInput = document.getElementById('apiKey');
+        if (!details || !badge || !keyInput) return;
+        function updateBadge() {
+          badge.textContent = keyInput.value.trim() ? '✓ 入力済み' : '';
+        }
+        // 保存済みのキーがあるときは、最初から閉じておく
+        if (keyInput.value.trim()) details.removeAttribute('open');
+        updateBadge();
+        details.addEventListener('toggle', updateBadge);
+        keyInput.addEventListener('input', updateBadge);
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
+  <!-- 画面のプログラムでエラーが出たときに、写メ読み取り欄へ原因を表示する (表示だけの処理) -->
+  <script id="errorNoticeScript">
+    window.addEventListener('error', function (e) {
+      try {
+        if (!e || !e.message || e.message === 'Script error.') return;
+        var el = document.getElementById('aiStatus');
+        if (!el) return;
+        el.className = 'text-[11px] rounded-xl p-2.5 leading-relaxed whitespace-pre-wrap break-words bg-red-50 text-red-700 border border-red-200';
+        el.textContent = '画面のプログラムでエラーが出ました:\n' + e.message;
+      } catch (err) { /* 何もしない */ }
+    });
+  </script>
+  <!-- 読み取り成功のお知らせ: 画面上部に大きなメッセージ + 明細へ自動スクロール + 明細を光らせる (表示だけの処理) -->
+  <script id="resultNoticeScript">
+    (function () {
+      try {
+        var status = document.getElementById('aiStatus');
+        var rows = document.getElementById('itemRows');
+        if (!status || !rows) return;
+
+        var toast = document.createElement('div');
+        toast.id = 'aiToast';
+        toast.setAttribute('role', 'status');
+        toast.style.cssText = 'position:fixed;top:12px;left:50%;transform:translate(-50%,-140%);z-index:100;' +
+          'max-width:92vw;background:#1f8f4e;color:#fff;font-weight:800;font-size:1rem;line-height:1.4;' +
+          'padding:.85rem 1.2rem;border-radius:1rem;box-shadow:0 8px 24px rgba(0,0,0,.25);text-align:center;' +
+          'transition:transform .35s ease;cursor:pointer;';
+        document.body.appendChild(toast);
+
+        var hideTimer = null;
+        function hideToast() { toast.style.transform = 'translate(-50%,-140%)'; }
+        toast.addEventListener('click', hideToast);
+        function showToast(msg) {
+          toast.textContent = msg;
+          toast.style.transform = 'translate(-50%,0)';
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(hideToast, 4500);
+        }
+
+        function highlightDetails() {
+          var card = rows.closest('div[class*="card-"]') || rows;
+          try { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { card.scrollIntoView(); }
+          card.classList.remove('flash-ok');
+          void card.offsetWidth; // アニメーションをやり直すため
+          card.classList.add('flash-ok');
+        }
+
+        var prevSuccess = false;
+        new MutationObserver(function () {
+          var text = status.textContent || '';
+          var m = text.match(/^(\d+)件の明細を読み取りました/);
+          var isSuccess = !!m;
+          if (isSuccess && !prevSuccess) {
+            showToast('✅ 読み取り成功！ ' + m[1] + '件の明細を入れました');
+            highlightDetails();
+            try { if (navigator.vibrate) navigator.vibrate(80); } catch (e) { /* 何もしない */ }
+          }
+          prevSuccess = isSuccess;
+        }).observe(status, { childList: true, characterData: true, subtree: true });
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
+  <!-- 印刷: 行が多いときは、1枚(A4横)に収まるよう自動で縮小する (表示だけの処理。縮小の下限は55%) -->
+  <script id="printFitScript">
+    (function () {
+      try {
+        var area = document.getElementById('printable-area');
+        if (!area) return;
+        var PAGE_W = 287 / 25.4 * 96;  // A4横(297mm) - 左右の余白5mm×2
+        var PAGE_H = 200 / 25.4 * 96;  // A4横(210mm) - 上下の余白5mm×2
+        var MIN_SCALE = 0.55;
+
+        function reset() {
+          area.style.zoom = '';
+          area.style.width = '';
+          area.style.maxWidth = '';
+        }
+        function prepare() {
+          reset();
+          // 用紙と同じ幅にして、縮小しない場合の高さを測る
+          area.style.maxWidth = 'none';
+          area.style.width = PAGE_W + 'px';
+          var h = area.getBoundingClientRect().height;
+          if (h > PAGE_H && 'zoom' in area.style) {
+            // 全体を同じ比率で縮小すると、高さも同じ比率で小さくなる
+            var s = Math.max(MIN_SCALE, PAGE_H / h * 0.97);
+            area.style.zoom = String(s);
+            area.style.width = (PAGE_W / s) + 'px'; // 縮小しても用紙の幅いっぱいに広げる
+          }
+        }
+        window.addEventListener('beforeprint', prepare);
+        window.addEventListener('afterprint', reset);
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
+  <!-- 控なしボタン: 押すたびに「控あり / 控なし」を切り替え。控なしのときは、印刷で納品書(左半分)だけ出す (表示だけの処理) -->
+  <script id="copyToggleScript">
+    (function () {
+      try {
+        var btn = document.getElementById('toggleCopyBtn');
+        var title2 = document.getElementById('printTitle2');
+        if (!btn) return;
+        function copyName() {
+          // 納品書モードでは「納品控」、見積書モードでは「見積控」(画面の控の見出しと同じ文字)
+          var t = title2 ? (title2.textContent || '').replace(/\s+/g, '') : '';
+          return t || '納品控';
+        }
+        function render() {
+          var off = document.body.classList.contains('no-copy');
+          btn.textContent = '📄 ' + copyName() + ': ' + (off ? 'なし' : 'あり');
+          btn.classList.toggle('is-off', off);
+          btn.setAttribute('aria-pressed', off ? 'true' : 'false');
+        }
+        btn.addEventListener('click', function () {
+          document.body.classList.toggle('no-copy');
+          render();
+        });
+        if (title2) new MutationObserver(render).observe(title2, { childList: true, characterData: true, subtree: true });
+        render();
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
 </body>
 </html>
-
