@@ -149,6 +149,12 @@
     body.no-copy #printable-area .slip-left { border-right: none !important; }
     body.no-copy #printable-area .slip-left::after { display: none !important; }
 
+    /* ---- 単価の一律アップのボタン ---- */
+    .markup-btn { background: #fff; color: #27406b; font-weight: 700; font-size: .85rem; padding: .45rem .85rem; border-radius: 999px; border: 1px solid #c5d4e6; }
+    .markup-btn:active { background: #eaf1f8; }
+    .markup-btn.is-on { background: #27406b; color: #fff; border-color: #27406b; }
+    .markup-reset { background: transparent; color: #6b7f99; font-weight: 600; font-size: .8rem; padding: .45rem .6rem; border: none; text-decoration: underline; }
+
     @media print { body { background: #fff !important; } }
   </style>
   <style>
@@ -266,8 +272,9 @@
       <div class="flex gap-2">
         <button onclick="convertLineInput()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition">注文を明細に変換</button>
         <button onclick="loadExample()" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">例文を入れる</button>
+        <button id="yenStampBtn" type="button" aria-label="円を入力" class="px-4 py-2.5 font-black text-sm rounded-xl" style="background:#fff4d2;color:#7a5200;border:1px solid #f1d27a;">円</button>
       </div>
-      <p class="text-[10px] text-slate-500">全角数字・改行・スペース区切りに対応。数量のない商品は空欄にし、勝手に数量を補いません。</p>
+      <p class="text-[10px] text-slate-500">全角数字・改行・スペース区切りに対応。数量のない商品は空欄にし、勝手に数量を補いません。値段は「2000円」「¥2000」「@400」と書くと、単価に入ります。</p>
     </div>
 
     </div>
@@ -356,6 +363,20 @@
         <div>明細小計: ¥<span id="subtotal">0</span></div>
         <div>消費税 (参考): <span class="tax-amount">¥<span id="tax">0</span></span></div>
         <div class="grand-bar text-base font-black text-blue-600">合計: ¥<span id="grandTotal">0</span></div>
+      </div>
+
+      <!-- 単価の一律アップ(利益を乗せる) -->
+      <div id="markupBox" class="rounded-xl p-3 space-y-2" style="background:#f5f8fb;border:1px solid #dbe5f0;">
+        <div class="text-xs font-bold" style="color:#3b5170">単価を一律アップ（利益を乗せる）</div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="markup-btn" data-pct="10">+10%</button>
+          <button type="button" class="markup-btn" data-pct="15">+15%</button>
+          <button type="button" class="markup-btn" data-pct="20">+20%</button>
+          <button type="button" class="markup-btn" data-pct="25">+25%</button>
+          <button type="button" class="markup-btn" data-pct="30">+30%</button>
+          <button type="button" id="markupReset" class="markup-reset">元に戻す</button>
+        </div>
+        <p id="markupStatus" class="text-[11px]" style="color:#6b7f99">全部の行の単価に、同じ割合を上乗せします。何度押しても、元の単価に対する割合です。</p>
       </div>
 
       <!-- アクションボタン群 -->
@@ -652,7 +673,7 @@
 
     // LINE注文テキスト変換例文
     function loadExample() {
-      document.getElementById('lineInput').value = "トマト 3箱\nキャベツ 5玉\nきゅうり 10本";
+      document.getElementById('lineInput').value = "トマト 3箱2500円\nキャベツ 5玉300円\nジャガイモ7kg200円\nきゅうり 10本50円";
       convertLineInput();
     }
 
@@ -665,19 +686,29 @@
       lines.forEach(lineStr => {
         lineStr = lineStr.trim();
         if (!lineStr) return;
+        // 全角の数字・小数点を半角にそろえる (例: ２ → 2)
+        lineStr = lineStr.replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/．/g, '.');
+
+        // 行の最後にある値段(「2000円」「¥2000」「@400」「@400円」)を、単価として取り出す
+        let price = '';
+        const pm = lineStr.match(/[\s\u3000]*(?:[@＠]\s*)?(?:[¥￥]\s*([\d,]+(?:\.\d+)?)|([\d,]+(?:\.\d+)?)\s*円)[\s\u3000]*$/)
+                || lineStr.match(/[\s\u3000]*[@＠]\s*()([\d,]+(?:\.\d+)?)[\s\u3000]*$/);
+        if (pm) {
+          price = (pm[1] || pm[2]).replace(/,/g, '');
+          lineStr = lineStr.slice(0, pm.index).trim();
+        }
 
         let name = lineStr.replace(/^[・\-\*]\s*/, '').trim();
         let qty = '';
         let unit = '';
-        let price = '';
 
-        const match = name.match(/^(.+?)\s+([\d\.]+)\s*(c\/s|ケース|玉|個|パック|本|袋|箱|kg|g|束)?$/i);
+        const match = name.match(/^(.+?)\s+([\d\.]+)\s*([^\s\d.円¥￥]{1,6})?$/i);
         if (match) {
           name = match[1].trim();
           qty = match[2];
           if (match[3]) unit = match[3];
         } else {
-          const qtyOnly = name.match(/([\d\.]+)\s*(c\/s|ケース|玉|個|パック|本|袋|箱|kg|g|束)?$/i);
+          const qtyOnly = name.match(/([\d\.]+)\s*([^\s\d.円¥￥]{1,6})?$/i);
           if (qtyOnly) {
             qty = qtyOnly[1];
             if (qtyOnly[2]) unit = qtyOnly[2];
@@ -909,7 +940,8 @@
       if (lineBox) {
         lineBox.value = prepared.map(it => {
           const q = it.qty ? it.qty + it.unit : '';
-          return [it.name, q].filter(Boolean).join(' ');
+          const p = it.price ? it.price + '円' : '';
+          return [it.name, q, p].filter(Boolean).join(' ');
         }).filter(Boolean).join('\n');
       }
       return prepared.length;
@@ -1396,6 +1428,23 @@
           card.classList.add('flash-ok');
         }
 
+        // 「注文を明細に変換」「例文を入れる」を押したときも、写メ読み取りと同じように知らせて、明細までスクロールする
+        function notifyConverted() {
+          var n = 0;
+          rows.querySelectorAll('tr').forEach(function (tr) {
+            var name = tr.querySelector('.item-name');
+            if (name && name.value.trim()) n++;
+          });
+          if (!n) return;
+          showToast('✅ 変換成功！ ' + n + '件の明細に入れました');
+          highlightDetails();
+          try { if (navigator.vibrate) navigator.vibrate(80); } catch (e) { /* 何もしない */ }
+        }
+        ['convertLineInput()', 'loadExample()'].forEach(function (call) {
+          var b = document.querySelector('button[onclick="' + call + '"]');
+          if (b) b.addEventListener('click', notifyConverted);   // 元の動き(変換)のあとに実行される
+        });
+
         var prevSuccess = false;
         new MutationObserver(function () {
           var text = status.textContent || '';
@@ -1468,6 +1517,80 @@
         });
         if (title2) new MutationObserver(render).observe(title2, { childList: true, characterData: true, subtree: true });
         render();
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
+  <!-- 円スタンプ: LINE欄のカーソル位置に「円」を入れる。値段を書くときの入力を楽にする (表示だけの処理) -->
+  <script id="yenStampScript">
+    (function () {
+      try {
+        var btn = document.getElementById('yenStampBtn');
+        var box = document.getElementById('lineInput');
+        if (!btn || !box) return;
+        // パソコンでは、ボタンを押しても文字入力欄からカーソルが外れないようにする
+        btn.addEventListener('mousedown', function (e) { e.preventDefault(); });
+        btn.addEventListener('click', function () {
+          var start = box.selectionStart, end = box.selectionEnd;
+          if (typeof start !== 'number') { start = end = box.value.length; }
+          box.value = box.value.slice(0, start) + '円' + box.value.slice(end);
+          var pos = start + 1;
+          box.focus();
+          try { box.setSelectionRange(pos, pos); } catch (e) { /* 何もしない */ }
+        });
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
+  <!-- 単価の一律アップ: 全部の行の単価に、同じ割合を上乗せする。元の単価を覚えておくので、何度押しても重ならず、「元に戻す」で戻せる -->
+  <script id="markupScript">
+    (function () {
+      try {
+        var buttons = document.querySelectorAll('.markup-btn');
+        var resetBtn = document.getElementById('markupReset');
+        var status = document.getElementById('markupStatus');
+        if (!buttons.length || !resetBtn || !status) return;
+
+        function inputs() { return document.querySelectorAll('.item-price'); }
+        // 上乗せしたあとに、自分で単価を書き換えていない行だけ「元の単価」を覚えている
+        function baseOf(input) {
+          if (input.dataset.markupBase !== undefined && input.dataset.markupLast === input.value) {
+            return parseFloat(input.dataset.markupBase);
+          }
+          return parseFloat(input.value);
+        }
+        function mark(pct) {
+          var n = 0;
+          inputs().forEach(function (input) {
+            var cur = parseFloat(input.value);
+            if (isNaN(cur)) return;           // 単価が空の行は、そのまま
+            var base = baseOf(input);
+            var next = Math.round(base * (1 + pct / 100));
+            input.dataset.markupBase = String(base);
+            input.dataset.markupLast = String(next);
+            input.value = String(next);
+            n++;
+          });
+          if (typeof calculateTotals === 'function') calculateTotals();
+          buttons.forEach(function (b) { b.classList.toggle('is-on', b.getAttribute('data-pct') === String(pct)); });
+          status.textContent = n ? (n + '件の単価を +' + pct + '% にしました（元の単価に対する割合）') : '単価が入っている行がありません。';
+        }
+        function reset() {
+          var n = 0;
+          inputs().forEach(function (input) {
+            if (input.dataset.markupBase !== undefined && input.dataset.markupLast === input.value) {
+              input.value = input.dataset.markupBase;
+              n++;
+            }
+            delete input.dataset.markupBase;
+            delete input.dataset.markupLast;
+          });
+          if (typeof calculateTotals === 'function') calculateTotals();
+          buttons.forEach(function (b) { b.classList.remove('is-on'); });
+          status.textContent = n ? (n + '件の単価を元に戻しました') : '元に戻す単価はありません。';
+        }
+        buttons.forEach(function (b) {
+          b.addEventListener('click', function () { mark(parseFloat(b.getAttribute('data-pct'))); });
+        });
+        resetBtn.addEventListener('click', reset);
       } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
     })();
   </script>
