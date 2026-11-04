@@ -63,16 +63,25 @@
     /* ---- 入力済みの明細: 件数の表示 ---- */
     .items-count-bar { display: flex; justify-content: space-between; align-items: center; padding: .5rem .8rem; background: #e8f7ed; border-radius: .75rem; font-weight: 800; font-size: .9rem; color: #124a2a; }
 
-    /* ---- スマホ(幅719px以下): 明細を「1品1行のコンパクトな一覧」に。タップした行だけ開いて、単価・単位スタンプ・赤伝が出る ---- */
+    /* ---- スマホ(幅719px以下): 明細を「見出し行つきの、1品1行のコンパクトな一覧」に。タップした行だけ開いて、スタンプ・赤伝・削除が出る ---- */
     @media (max-width: 719px) {
+      :root { --cols: minmax(0, 1fr) 2.4rem 3.2rem 2.7rem 4rem; }
       .items-wrap { overflow-x: visible !important; border: none !important; }
       .items-table { min-width: 0 !important; display: block; }
-      .items-table thead { display: none; }
-      #itemRows { display: block; border: 1px solid #cfe8d6; border-radius: .75rem; overflow: hidden; background: #fff; }
 
-      /* 閉じている行: 品名 / 数量 / 単位 / 金額 / ✕ を1行に */
+      /* 見出し行: 品名 / 数量 / 単位 / 単価 / 金額 */
+      .items-table thead, .items-table thead.thead-green { display: block; background: #e8f7ed !important; color: #124a2a !important; border: 1px solid #cfe8d6; border-bottom: none; border-radius: .75rem .75rem 0 0; }
+      .items-table thead tr { display: grid; grid-template-columns: var(--cols); gap: 0 .3rem; padding: .4rem .5rem; background: transparent !important; }
+      .items-table thead th { display: block; width: auto !important; min-width: 0 !important; max-width: none !important; overflow: hidden; padding: 0 !important; background: transparent !important; border-radius: 0 !important; color: #124a2a !important; font-size: .72rem; font-weight: 800; text-align: center; white-space: nowrap; }
+      .items-table thead th:nth-child(1) { text-align: left; }
+      .items-table thead th:nth-child(4), .items-table thead th:nth-child(5) { text-align: right; }
+      .items-table thead th:nth-child(6), .items-table thead th:nth-child(7) { display: none; }
+
+      #itemRows { display: block; border: 1px solid #cfe8d6; border-radius: 0 0 .75rem .75rem; overflow: hidden; background: #fff; }
+
+      /* 閉じている行: 品名 / 数量 / 単位 / 単価 / 金額 を1行に */
       #itemRows > tr {
-        display: grid; grid-template-columns: minmax(0, 1fr) 2.7rem 3.1rem 4.6rem 1.8rem; align-items: center; gap: 0 .3rem;
+        display: grid; grid-template-columns: var(--cols); align-items: center; gap: 0 .3rem;
         padding: .3rem .5rem; background: #fff; border: none !important; border-bottom: 1px solid #e7f0e9 !important;
       }
       #itemRows > tr:last-child { border-bottom: none !important; }
@@ -82,14 +91,17 @@
       #itemRows > tr > td:nth-child(1) { grid-column: 1; grid-row: 1; }
       #itemRows > tr > td:nth-child(2) { grid-column: 2; grid-row: 1; }
       #itemRows > tr > td:nth-child(3) { grid-column: 3; grid-row: 1; }
-      #itemRows > tr > td:nth-child(5) { grid-column: 4; grid-row: 1; text-align: right !important; font-weight: 800; font-size: .85rem; white-space: nowrap; }
-      #itemRows > tr > td:nth-child(7) { grid-column: 5; grid-row: 1; text-align: right !important; }
-      #itemRows > tr > td:nth-child(4), #itemRows > tr > td:nth-child(6) { display: none; }
+      #itemRows > tr > td:nth-child(4) { grid-column: 4; grid-row: 1; }
+      #itemRows > tr > td:nth-child(5) { grid-column: 5; grid-row: 1; text-align: right !important; font-weight: 800; font-size: .9rem; white-space: nowrap; color: #111827; }
+      #itemRows > tr > td:nth-child(6), #itemRows > tr > td:nth-child(7) { display: none; }
       #itemRows > tr > td:nth-child(3) > div { display: none; }
 
-      /* 閉じている行の入力欄は、枠なしで文字のように見せる */
-      #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) input { border-color: transparent !important; background: transparent !important; padding: .3rem .15rem !important; font-size: .85rem !important; border-radius: .4rem !important; }
+      /* 閉じている行の入力欄は、枠なしで文字のように見せる(文字は少し大きく・濃く) */
+      #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) input { border-color: transparent !important; background: transparent !important; padding: .3rem .1rem !important; font-size: .95rem !important; color: #111827 !important; border-radius: .4rem !important; }
+      #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) > td:nth-child(1) input { text-align: left; font-weight: 600; }
       #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) > td:nth-child(2) input, #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) > td:nth-child(3) > input { text-align: center; }
+      #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) > td:nth-child(3) > input { font-size: .85rem !important; }
+      #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) > td:nth-child(4) input { text-align: right; }
       #itemRows > tr > td:nth-child(3) > input { margin-bottom: 0 !important; }
 
       /* 開いている行(タップした行・空の行): 入力欄とスタンプが出る */
@@ -97,13 +109,13 @@
         grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .4rem .5rem; padding: .6rem .55rem;
         background: #fffdf0 !important; box-shadow: inset 0 0 0 2px #8fcba3;
       }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) input { padding: .35rem .5rem !important; border-radius: .5rem !important; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) input { padding: .4rem .5rem !important; border-radius: .5rem !important; font-size: 1.05rem !important; color: #111827 !important; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td::before { display: block; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(1) { grid-column: 1 / span 2; grid-row: 1; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(1)::before { content: "品名"; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(6) { display: block; grid-column: 3; grid-row: 1; align-self: end; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(6)::before { display: none; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(7) { grid-column: 4; grid-row: 1; align-self: end; text-align: right !important; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(7) { display: block; grid-column: 4; grid-row: 1; align-self: end; text-align: right !important; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(7)::before { display: none; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(2) { grid-column: 1; grid-row: 2; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(2)::before { content: "数量"; }
@@ -114,13 +126,13 @@
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(3) button { padding: .2rem .45rem !important; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(4) { display: block; grid-column: 3; grid-row: 2; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(4)::before { content: "単価(円)"; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(5) { grid-column: 4; grid-row: 2; align-self: end; font-size: .95rem; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(5) { grid-column: 4; grid-row: 2; align-self: end; font-size: 1rem; }
       #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(5)::before { content: "金額"; text-align: right; }
 
       /* ボタン類 */
       #itemRows button[onclick^="toggleRowRed"] { padding: .2rem .4rem !important; font-size: .75rem !important; }
       #itemRows button[onclick^="this.closest"] {
-        width: 1.7rem; height: 1.7rem; font-size: 1.05rem !important; line-height: 1;
+        width: 1.9rem; height: 1.9rem; font-size: 1.1rem !important; line-height: 1;
         background: #fff1f1; border: 1px solid #f3b8b8; border-radius: .45rem; padding: 0 !important;
       }
     }
@@ -147,8 +159,9 @@
 
     /* ---- 仕上げ: 入力欄 ---- */
     :is(.card-amber, .card-blue, .card-green, .card-orange, .card-teal) :is(input:not([type=checkbox]):not([type=file]), select, textarea) {
-      background: #f8fbff !important; border-color: #bcd3f0 !important; font-size: .875rem !important;
+      background: #f8fbff !important; border-color: #bcd3f0 !important; font-size: .95rem !important; color: #111827;
     }
+    :is(.card-amber, .card-blue, .card-green, .card-orange, .card-teal) :is(input, textarea)::placeholder { color: #9aa8ba; }
 
     /* ---- 仕上げ: 赤伝をハンコ風に(押すと赤く塗りつぶし) ---- */
     #itemRows button[onclick^="toggleRowRed"] {
@@ -216,6 +229,16 @@
     #modalPrintArea .slip-shop { font-size: 1.8rem; }
     #modalPrintArea .slip-badge { font-size: 1.05rem; }
     #modalPrintArea .slip-dateline { font-size: .95rem; }
+
+    /* ---- 長い品名(例: シャインマスカット)が、閉じた行で切れるとき: 左右にゆっくり動かして、全部読めるようにする ---- */
+    .name-marquee { position: absolute; left: .1rem; right: .1rem; top: 0; bottom: 0; overflow: hidden; display: flex; align-items: center; pointer-events: none; font-size: .95rem; font-weight: 600; color: #111827; white-space: nowrap; }
+    .name-marquee > span { display: inline-block; animation: nameSlide var(--dur, 6s) ease-in-out infinite alternate; }
+    @keyframes nameSlide { 0%, 14% { transform: translateX(0); } 86%, 100% { transform: translateX(var(--shift, 0px)); } }
+    @media (max-width: 719px) {
+      #itemRows > tr > td:nth-child(1) { position: relative; }
+      #itemRows > tr > td.has-marquee input { -webkit-text-fill-color: transparent !important; caret-color: transparent; }
+    }
+    @media (prefers-reduced-motion: reduce) { .name-marquee > span { animation: none; } }
 
     @media print { body { background: #fff !important; } }
   </style>
@@ -413,8 +436,8 @@
             <tr>
               <th class="p-2 rounded-l-lg">品名</th>
               <th class="p-2 w-16 text-center">数量</th>
-              <th class="p-2 w-52 text-center">単位 (スタンプ付)</th>
-              <th class="p-2 w-20 text-center">単価 (円)</th>
+              <th class="p-2 w-52 text-center">単位<span class="hidden md:inline"> (スタンプ付)</span></th>
+              <th class="p-2 w-20 text-center">単価<span class="hidden md:inline"> (円)</span></th>
               <th class="p-2 w-20 text-right">金額</th>
               <th class="p-2 w-12 text-center">赤伝</th>
               <th class="p-2 w-8 rounded-r-lg"></th>
@@ -1849,6 +1872,55 @@
           var tr = e.target.closest && e.target.closest('tr');
           if (tr) openOnly(tr);
         });
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
+  <!-- 長い品名の自動スクロール: 閉じた行で品名が切れるときだけ、文字を左右にゆっくり動かして全部見せる。行を開く・文字を入力するときは止まる (表示だけの処理。入力欄の中身は変えない) -->
+  <script id="marqueeScript">
+    (function () {
+      try {
+        var rows = document.getElementById('itemRows');
+        if (!rows) return;
+        var mq = window.matchMedia ? window.matchMedia('(max-width: 719px)') : { matches: false };
+
+        function apply(tr) {
+          var td = tr.querySelector('td:first-child');
+          var input = td && td.querySelector('.item-name');
+          if (!td || !input) return;
+          var show = false, shift = 0;
+          // スマホで、閉じている行(開いていない・文字を入力中でない)のときだけ
+          if (mq.matches && !tr.classList.contains('is-open') && !tr.contains(document.activeElement) && input.value) {
+            var over = input.scrollWidth - input.clientWidth;
+            if (over > 3) { show = true; shift = -(over + 6); }
+          }
+          var m = td.querySelector('.name-marquee');
+          if (!show) {
+            if (m) m.remove();
+            td.classList.remove('has-marquee');
+            return;
+          }
+          if (!m) {
+            m = document.createElement('div');
+            m.className = 'name-marquee';
+            m.setAttribute('aria-hidden', 'true');
+            m.appendChild(document.createElement('span'));
+            td.appendChild(m);
+          }
+          var span = m.firstChild;
+          if (span.textContent !== input.value) span.textContent = input.value;
+          m.style.setProperty('--shift', shift + 'px');
+          m.style.setProperty('--dur', Math.min(10, Math.max(4, Math.abs(shift) / 18 + 3)) + 's');
+          td.classList.add('has-marquee');
+        }
+        function refresh() { Array.prototype.forEach.call(rows.querySelectorAll('tr'), apply); }
+
+        rows.addEventListener('input', refresh);
+        rows.addEventListener('focusin', refresh);
+        rows.addEventListener('focusout', function () { setTimeout(refresh, 60); });
+        new MutationObserver(refresh).observe(rows, { childList: true });
+        window.addEventListener('resize', refresh);
+        setInterval(refresh, 800);   // 写メ読み取りなど、プログラムが値を入れたとき・行の開け閉めのあとの合わせ
+        refresh();
       } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
     })();
   </script>
