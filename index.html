@@ -88,34 +88,34 @@
       #itemRows > tr > td:nth-child(3) > div { display: none; }
 
       /* 閉じている行の入力欄は、枠なしで文字のように見せる */
-      #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus)):not(:has(.item-name:placeholder-shown)) input { border-color: transparent !important; background: transparent !important; padding: .3rem .15rem !important; font-size: .85rem !important; border-radius: .4rem !important; }
-      #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus)):not(:has(.item-name:placeholder-shown)) > td:nth-child(2) input, #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus)):not(:has(.item-name:placeholder-shown)) > td:nth-child(3) > input { text-align: center; }
+      #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) input { border-color: transparent !important; background: transparent !important; padding: .3rem .15rem !important; font-size: .85rem !important; border-radius: .4rem !important; }
+      #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) > td:nth-child(2) input, #itemRows > tr:not(.is-open):not(:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active)):not(:has(.item-name:placeholder-shown)) > td:nth-child(3) > input { text-align: center; }
       #itemRows > tr > td:nth-child(3) > input { margin-bottom: 0 !important; }
 
       /* 開いている行(タップした行・空の行): 入力欄とスタンプが出る */
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) {
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) {
         grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .4rem .5rem; padding: .6rem .55rem;
         background: #fffdf0 !important; box-shadow: inset 0 0 0 2px #8fcba3;
       }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) input { padding: .35rem .5rem !important; border-radius: .5rem !important; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td::before { display: block; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(1) { grid-column: 1 / span 2; grid-row: 1; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(1)::before { content: "品名"; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(6) { display: block; grid-column: 3; grid-row: 1; align-self: end; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(6)::before { display: none; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(7) { grid-column: 4; grid-row: 1; align-self: end; text-align: right !important; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(7)::before { display: none; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(2) { grid-column: 1; grid-row: 2; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(2)::before { content: "数量"; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(3) { display: contents; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(3)::before { display: none; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(3) > input { grid-column: 2; grid-row: 2; align-self: end; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(3) > div { display: flex; grid-column: 1 / -1; grid-row: 3; flex-wrap: wrap; justify-content: flex-start !important; gap: .25rem !important; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(3) button { padding: .2rem .45rem !important; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(4) { display: block; grid-column: 3; grid-row: 2; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(4)::before { content: "単価(円)"; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(5) { grid-column: 4; grid-row: 2; align-self: end; font-size: .95rem; }
-      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus), tr:has(.item-name:placeholder-shown)) > td:nth-child(5)::before { content: "金額"; text-align: right; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) input { padding: .35rem .5rem !important; border-radius: .5rem !important; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td::before { display: block; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(1) { grid-column: 1 / span 2; grid-row: 1; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(1)::before { content: "品名"; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(6) { display: block; grid-column: 3; grid-row: 1; align-self: end; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(6)::before { display: none; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(7) { grid-column: 4; grid-row: 1; align-self: end; text-align: right !important; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(7)::before { display: none; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(2) { grid-column: 1; grid-row: 2; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(2)::before { content: "数量"; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(3) { display: contents; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(3)::before { display: none; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(3) > input { grid-column: 2; grid-row: 2; align-self: end; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(3) > div { display: flex; grid-column: 1 / -1; grid-row: 3; flex-wrap: wrap; justify-content: flex-start !important; gap: .25rem !important; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(3) button { padding: .2rem .45rem !important; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(4) { display: block; grid-column: 3; grid-row: 2; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(4)::before { content: "単価(円)"; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(5) { grid-column: 4; grid-row: 2; align-self: end; font-size: .95rem; }
+      #itemRows > :is(tr.is-open, tr:has(input:focus, button[onclick^="setUnit"]:focus, button[onclick^="toggleRowRed"]:focus, button[onclick^="setUnit"]:active, button[onclick^="toggleRowRed"]:active), tr:has(.item-name:placeholder-shown)) > td:nth-child(5)::before { content: "金額"; text-align: right; }
 
       /* ボタン類 */
       #itemRows button[onclick^="toggleRowRed"] { padding: .2rem .4rem !important; font-size: .75rem !important; }
@@ -204,6 +204,18 @@
     /* ---- 入力済みの明細の件数: 品名が入っている行を数える(プログラムを使わない) ---- */
     #itemRows > tr:not(:has(.item-name:placeholder-shown)) { counter-increment: itemcnt; }
     #itemsCount::before { content: "合計 " counter(itemcnt) " 件"; }
+
+    /* ---- 伝票の上の部分: 取引先名を大きく + 「納品書」の枠 + 日付の線 ---- */
+    .slip-head { margin-bottom: .5rem; }
+    .slip-head-top { display: flex; justify-content: space-between; align-items: flex-end; gap: .6rem; padding-bottom: .3rem; border-bottom: 2px solid #1e293b; }
+    .slip-shop { margin: 0; font-size: 1.45rem; font-weight: 900; line-height: 1.15; color: #111827; word-break: break-all; }
+    .slip-sama { font-size: .8rem; font-weight: 700; }
+    .slip-shop > span:first-child:empty + .slip-sama { display: none; }
+    .slip-badge { margin: 0; border: 2px solid #1e293b; border-radius: .6rem; padding: .15rem .6rem; font-size: .9rem; font-weight: 900; letter-spacing: .2em; white-space: nowrap; color: #111827; }
+    .slip-dateline { margin: 0 0 .5rem; padding: .15rem 0; text-align: center; font-weight: 800; font-size: .8rem; color: #111827; border-bottom: 1px solid #1e293b; }
+    #modalPrintArea .slip-shop { font-size: 1.8rem; }
+    #modalPrintArea .slip-badge { font-size: 1.05rem; }
+    #modalPrintArea .slip-dateline { font-size: .95rem; }
 
     @media print { body { background: #fff !important; } }
   </style>
@@ -482,17 +494,15 @@
       <!-- 伝票 (左側) -->
       <div class="slip-left border-r pr-6 flex flex-col justify-between">
         <div>
-          <div class="flex justify-between items-start mb-3 border-b-2 border-slate-800 pb-2">
-            <div>
-              <h2 id="printTitle1" class="text-base font-black tracking-widest text-slate-900">納 品 書</h2>
+          <div class="slip-head">
+            <div class="slip-head-top">
+              <p class="slip-shop"><span id="pClient"></span><span class="slip-sama"> 様</span></p>
+              <h2 id="printTitle1" class="slip-badge">納 品 書</h2>
             </div>
-            <div class="text-right text-[10px] text-slate-600">
-              <p>日付: <span id="pDate"></span></p>
-              <p class="font-bold">支払: <span id="pPayment">現金</span></p>
-            </div>
+            <p class="slip-dateline"><span id="pDate"></span></p>
           </div>
           <div class="flex justify-between items-end mb-3">
-            <p class="text-xs font-bold text-slate-900 underline text-lg"><span id="pClient"></span> 様</p>
+            <p class="text-[10px] font-bold text-slate-700">支払: <span id="pPayment">現金</span></p>
             <div class="text-right text-[10px] text-slate-700">
               <p class="font-bold text-xs"><span id="pIssuer"></span></p>
               <p id="pIssuerAddress"></p>
@@ -527,17 +537,15 @@
       <!-- 控 (右側) -->
       <div class="slip-right pl-2 flex flex-col justify-between">
         <div>
-          <div class="flex justify-between items-start mb-3 border-b-2 border-slate-800 pb-2">
-            <div>
-              <h2 id="printTitle2" class="text-base font-black tracking-widest text-slate-900">納 品 控</h2>
+          <div class="slip-head">
+            <div class="slip-head-top">
+              <p class="slip-shop"><span id="pClient2"></span><span class="slip-sama"> 様</span></p>
+              <h2 id="printTitle2" class="slip-badge">納 品 控</h2>
             </div>
-            <div class="text-right text-[10px] text-slate-600">
-              <p>日付: <span id="pDate2"></span></p>
-              <p class="font-bold">支払: <span id="pPayment2">現金</span></p>
-            </div>
+            <p class="slip-dateline"><span id="pDate2"></span></p>
           </div>
           <div class="flex justify-between items-end mb-3">
-            <p class="text-xs font-bold text-slate-900 underline text-lg"><span id="pClient2"></span> 様</p>
+            <p class="text-[10px] font-bold text-slate-700">支払: <span id="pPayment2">現金</span></p>
             <div class="text-right text-[10px] text-slate-700">
               <p class="font-bold text-xs"><span id="pIssuer2"></span></p>
               <p id="pIssuerAddress2"></p>
@@ -581,18 +589,15 @@
       
       <div class="modal-body p-3 overflow-y-auto bg-slate-50 flex-1 min-h-0">
         <div id="modalPrintArea" class="bg-white p-5 border rounded-xl shadow-sm text-slate-900">
-          <div class="flex justify-between items-start mb-3 border-b-2 border-slate-900 pb-2">
-            <div>
-              <h2 id="modalTitle" class="text-lg font-black tracking-widest text-slate-900">納 品 書</h2>
+          <div class="slip-head">
+            <div class="slip-head-top">
+              <p class="slip-shop"><span id="mClient"></span><span class="slip-sama"> 様</span></p>
+              <h2 id="modalTitle" class="slip-badge">納 品 書</h2>
             </div>
-            <div class="text-right text-xs text-slate-600">
-              <p>日付: <span id="mDate"></span></p>
-              <p class="font-bold">支払: <span id="mPayment"></span></p>
-            </div>
+            <p class="slip-dateline"><span id="mDate"></span></p>
           </div>
-
-          <div class="flex justify-between items-end mb-4">
-            <p class="text-base font-bold text-slate-900 underline"><span id="mClient"></span> 様</p>
+          <div class="flex justify-between items-end mb-3">
+            <p class="text-xs font-bold text-slate-700">支払: <span id="mPayment"></span></p>
             <div class="text-right text-xs text-slate-700">
               <p class="font-bold text-sm"><span id="mIssuer"></span></p>
               <p id="mIssuerAddress"></p>
@@ -1130,9 +1135,11 @@
             <button type="button" onclick="setUnit(this, '玉')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">玉</button>
             <button type="button" onclick="setUnit(this, '個')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">個</button>
             <button type="button" onclick="setUnit(this, 'c/s')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">c/s</button>
+            <button type="button" onclick="setUnit(this, 'p/c')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">p/c</button>
             <button type="button" onclick="setUnit(this, '袋')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">袋</button>
             <button type="button" onclick="setUnit(this, 'パック')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">パック</button>
             <button type="button" onclick="setUnit(this, '本')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">本</button>
+            <button type="button" onclick="setUnit(this, '房')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">房</button>
             <button type="button" onclick="setUnit(this, '半分')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">半分</button>
             <button type="button" onclick="setUnit(this, '4分の1')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] rounded-md font-bold text-slate-700 shadow-sm">4分の1</button>
           </div>
@@ -1226,6 +1233,14 @@
       updatePrint();
     }
 
+    // 日付を「2026年11月1日(日)」の形にする
+    function formatJpDate(v) {
+      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
+      if (!m) return v || '';
+      const dt = new Date(+m[1], +m[2] - 1, +m[3]);
+      return `${m[1]}年${+m[2]}月${+m[3]}日(${'日月火水木金土'[dt.getDay()]})`;
+    }
+
     // 伝票表示内容をアップデート
     function updatePrint() {
       const issuer = document.getElementById('issuer').value;
@@ -1251,9 +1266,9 @@
       document.getElementById('pClient2').innerText = client;
       document.getElementById('mClient').innerText = client;
 
-      document.getElementById('pDate').innerText = date;
-      document.getElementById('pDate2').innerText = date;
-      document.getElementById('mDate').innerText = date;
+      document.getElementById('pDate').innerText = formatJpDate(date);
+      document.getElementById('pDate2').innerText = formatJpDate(date);
+      document.getElementById('mDate').innerText = formatJpDate(date);
 
       document.getElementById('pPayment').innerText = payment;
       document.getElementById('pPayment2').innerText = payment;
@@ -1808,6 +1823,32 @@
         });
         window.addEventListener('afterprint', clear);                 // 印刷画面を閉じたら、ふだんの状態に戻す
         if (normalPrintBtn) normalPrintBtn.addEventListener('click', clear, true);   // ふだんの印刷ボタンを押すときは、必ずふだんの状態で
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
+  <!-- 明細の行: 選んだ行を、別の欄に移っても開いたままにする(別の行を選ぶと閉じる)。単位スタンプを押す途中で行が閉じないようにする (表示だけの処理) -->
+  <script id="stickyOpenScript">
+    (function () {
+      try {
+        var rows = document.getElementById('itemRows');
+        if (!rows) return;
+        function allRows() { return Array.prototype.slice.call(rows.querySelectorAll('tr')); }
+        function isEmpty(tr) {
+          var n = tr.querySelector('.item-name');
+          return !n || !n.value.trim();
+        }
+        function openOnly(tr) {
+          allRows().forEach(function (r) { r.classList.toggle('is-open', r === tr || isEmpty(r)); });
+        }
+        rows.addEventListener('focusin', function (e) {
+          var tr = e.target.closest && e.target.closest('tr');
+          if (tr) openOnly(tr);
+        });
+        rows.addEventListener('click', function (e) {
+          if (e.target.closest && e.target.closest('button')) return;   // ボタン(×・スタンプ)では開き直さない
+          var tr = e.target.closest && e.target.closest('tr');
+          if (tr) openOnly(tr);
+        });
       } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
     })();
   </script>
