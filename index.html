@@ -257,6 +257,15 @@
     .calc-k.k-eq { background: var(--green); color: #fff; border-color: var(--green); grid-column: 4; grid-row: 4 / span 2; height: auto; }
     .calc-k.k-zero { grid-column: 1 / span 2; }
 
+    /* ---- 取引先・発行元の登録 ---- */
+    .reg-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+    .reg-label { font-size: .75rem; font-weight: 800; color: #0b4a46; min-width: 3rem; }
+    .reg-select { flex: 1 1 9rem; min-width: 0; padding: .5rem .6rem; border-radius: .6rem; }
+    .reg-btn { padding: .5rem .8rem; border-radius: .6rem; font-size: .8rem; font-weight: 700; background: #e0f5f3; color: #0b4a46; border: 1px solid #a9ddd8; }
+    .reg-btn:active { filter: brightness(.94); }
+    .reg-btn-del { background: #fff1f1; color: #c62828; border-color: #f3b8b8; }
+    .reg-status { min-height: 1.1rem; font-size: .75rem; font-weight: 700; color: #0b4a46; }
+
     @media print { body { background: #fff !important; } }
   </style>
   <style>
@@ -392,6 +401,21 @@
       <div class="flex items-center gap-2">
         <span class="text-indigo-600 text-base">📋</span>
         <h2 class="text-xs font-bold text-slate-800">伝票情報設定</h2>
+      </div>
+      <!-- 取引先・発行元の登録 -->
+      <div class="space-y-2 mb-3">
+        <div class="reg-bar">
+          <span class="reg-label">取引先</span>
+          <select id="clientSelect" class="reg-select" aria-label="登録済みの取引先を選ぶ"></select>
+          <button id="clientRegBtn" type="button" class="reg-btn">＋ 今の取引先を登録</button>
+          <button id="clientDelBtn" type="button" class="reg-btn reg-btn-del">🗑 削除</button>
+        </div>
+        <div class="reg-bar">
+          <span class="reg-label">発行元</span>
+          <button id="issuerRegBtn" type="button" class="reg-btn">💾 発行元を登録（名前・住所・電話・登録番号）</button>
+          <button id="issuerDelBtn" type="button" class="reg-btn reg-btn-del">登録を消す</button>
+        </div>
+        <p id="regStatus" class="reg-status" aria-live="polite"></p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
         <div>
@@ -1540,7 +1564,7 @@
         function updateBadge() {
           badge.textContent = keyInput.value.trim() ? '✓ 入力済み' : '';
         }
-        // 保存済みのキーがあるときは、最初から閉じておく
+         // 保存済みのキーがあるときは、最初から閉じておく
         if (keyInput.value.trim()) details.removeAttribute('open');
         updateBadge();
         details.addEventListener('toggle', updateBadge);
@@ -1568,7 +1592,7 @@
         var rows = document.getElementById('itemRows');
         if (!status || !rows) return;
 
-         var toast = document.createElement('div');
+        var toast = document.createElement('div');
         toast.id = 'aiToast';
         toast.setAttribute('role', 'status');
         toast.style.cssText = 'position:fixed;top:12px;left:50%;transform:translate(-50%,-140%);z-index:100;' +
@@ -2073,6 +2097,100 @@
         modal.addEventListener('click', function (e) { if (e.target === modal) close(); });   // 外側をタップしても閉じる
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
         render();
+      } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
+    })();
+  </script>
+  <!-- 取引先・発行元の登録: 取引先は何件でも登録して、選ぶだけで入る。発行元は1件登録しておくと、開いたときに自動で入る。この端末のブラウザに保存 (表示だけの処理。計算や印刷の本体には触れない) -->
+  <script id="registryScript">
+    (function () {
+      try {
+        var CLIENTS_KEY = 'dokoden_clients', ISSUER_KEY = 'dokoden_issuer';
+        function $(id) { return document.getElementById(id); }
+        var sel = $('clientSelect'), regBtn = $('clientRegBtn'), delBtn = $('clientDelBtn');
+        var iReg = $('issuerRegBtn'), iDel = $('issuerDelBtn'), status = $('regStatus');
+        if (!sel || !regBtn || !delBtn || !iReg || !iDel) return;
+        var statusTimer = null;
+
+        function load(key, fallback) {
+          try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; }
+        }
+        function save(key, value) {
+          try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (e) { return false; }
+        }
+        function say(msg) {
+          if (!status) return;
+          status.textContent = msg;
+          clearTimeout(statusTimer);
+          statusTimer = setTimeout(function () { status.textContent = ''; }, 5000);
+        }
+        // 手で入力したときと同じように入れる(入力欄の「入力した」の合図を出して、伝票に反映させる)
+        function setVal(id, v) {
+          var el = $(id);
+          if (!el) return;
+          el.value = v || '';
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        function val(id) { var el = $(id); return el ? el.value : ''; }
+
+        function refreshClients(selected) {
+          var list = load(CLIENTS_KEY, []);
+          sel.innerHTML = '';
+          var first = document.createElement('option');
+          first.value = '';
+          first.textContent = list.length ? '-- 登録済みから選ぶ (' + list.length + '件) --' : '-- まだ登録がありません --';
+          sel.appendChild(first);
+          list.forEach(function (name) {
+            var o = document.createElement('option');
+            o.value = name; o.textContent = name;
+            sel.appendChild(o);
+          });
+          if (selected) sel.value = selected;
+        }
+
+        sel.addEventListener('change', function () { if (sel.value) setVal('client', sel.value); });
+
+        regBtn.addEventListener('click', function () {
+          var name = val('client').trim();
+          if (!name) { say('取引先の名前を入れてから、登録してください。'); return; }
+          var list = load(CLIENTS_KEY, []);
+          var isNew = list.indexOf(name) === -1;
+          if (isNew) list.push(name);
+          if (!save(CLIENTS_KEY, list)) { say('この環境では、登録を保存できません。'); return; }
+          refreshClients(name);
+          say(isNew ? '「' + name + '」を取引先に登録しました。' : '「' + name + '」は、すでに登録されています。');
+        });
+
+        delBtn.addEventListener('click', function () {
+          var name = sel.value;
+          if (!name) { say('消したい取引先を、上の一覧から選んでください。'); return; }
+          if (!window.confirm('「' + name + '」を、登録から削除しますか？')) return;
+          var list = load(CLIENTS_KEY, []).filter(function (n) { return n !== name; });
+          save(CLIENTS_KEY, list);
+          refreshClients('');
+          say('「' + name + '」を登録から削除しました。(入力欄の文字はそのままです)');
+        });
+
+        iReg.addEventListener('click', function () {
+          var data = { issuer: val('issuer'), issuerAddress: val('issuerAddress'), issuerPhone: val('issuerPhone'), issuerRegNo: val('issuerRegNo') };
+          if (!data.issuer.trim()) { say('発行元の名前を入れてから、登録してください。'); return; }
+          if (!save(ISSUER_KEY, data)) { say('この環境では、登録を保存できません。'); return; }
+          say('発行元「' + data.issuer.trim() + '」を登録しました。次に開いたとき、自動で入ります。');
+        });
+
+        iDel.addEventListener('click', function () {
+          var had = !!load(ISSUER_KEY, null);
+          try { localStorage.removeItem(ISSUER_KEY); } catch (e) { /* 何もしない */ }
+          say(had ? '発行元の登録を消しました。(入力欄の文字はそのままです)' : '発行元は、まだ登録されていません。');
+        });
+
+        // 開いたとき: 登録してある発行元を、空の欄に入れる(手で入れた文字は消さない)
+        refreshClients('');
+        var issuer = load(ISSUER_KEY, null);
+        if (issuer) {
+          ['issuer', 'issuerAddress', 'issuerPhone', 'issuerRegNo'].forEach(function (id) {
+            if (!val(id).trim() && issuer[id]) setVal(id, issuer[id]);
+          });
+        }
       } catch (e) { /* 表示だけの処理なので失敗しても無視 */ }
     })();
   </script>
